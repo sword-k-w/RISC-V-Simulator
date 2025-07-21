@@ -11,8 +11,8 @@ uint32_t DataMemeory::Result() {
   return memory_[address_] = input_;
 }
 
-void DataMemeory::SetAddress(const uint32_t &address) {
-  address_ = address;
+void DataMemeory::SetAddress(const uint32_t &input) {
+  address_ = input;
 }
 
 void DataMemeory::SetInput(const uint32_t &input) {
