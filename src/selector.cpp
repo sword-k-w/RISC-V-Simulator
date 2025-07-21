@@ -2,6 +2,8 @@
 
 namespace sjtu {
 
+Selector::Selector() : wire0_(0u), wire1_(0u), sel_(false) {}
+
 uint32_t Selector::Result() const {
   return sel_ ? wire1_ : wire0_;
 }

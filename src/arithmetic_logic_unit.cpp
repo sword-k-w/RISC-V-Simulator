@@ -2,6 +2,8 @@
 
 namespace sjtu {
 
+ArithmeticLogicUnit::ArithmeticLogicUnit() : wireA_(0u), wireB_(0u), sel_(And) {}
+
 uint32_t ArithmeticLogicUnit::Result() const {
   switch (sel_) {
     case Add:

@@ -8,5 +8,6 @@ include_directories(src/include)
 add_executable(RISC_V_Simulator
     src/selector.cpp
     src/arithmetic_logic_unit.cpp
+    src/data_memory.cpp
     src/naive_main.cpp
 )
