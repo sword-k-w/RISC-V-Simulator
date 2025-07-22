@@ -1,10 +1,11 @@
-#ifndef DATA_MEMORY_H
-#define DATA_MEMORY_H
+#ifndef MEMORY_H
+#define MEMORY_H
 
 #include <cstdint>
 #include <unordered_map>
 #include <string>
 #include <iostream>
+#include <cassert>
 
 namespace sjtu {
 
@@ -36,4 +37,4 @@ public:
 
 }
 
-#endif //DATA_MEMORY_H
+#endif //MEMORY_H

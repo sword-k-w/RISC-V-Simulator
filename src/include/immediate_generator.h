@@ -11,7 +11,7 @@ private:
   InstructionType sel_;
 public:
   ImmediateGenerator();
-  uint32_t Result() const;
+  int Result() const;
   void SetCode(const uint32_t &);
   void SetSel(const InstructionType &);
 };

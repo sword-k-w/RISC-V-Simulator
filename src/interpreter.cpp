@@ -7,6 +7,7 @@ Interpreter::Interpreter() : pc_(0u) {}
 void Interpreter::Run() {
   while (true) {
     // PC
+    std::cerr << pc_ << '\n';
     MEM_.SetPC(pc_);
     selectorA_.SetWire1(pc_);
     selectorPC_.SetWire0(pc_ + 4);
@@ -14,7 +15,6 @@ void Interpreter::Run() {
 
     // IMEM
     uint32_t code = MEM_.InstructionResult();
-    std::cerr << pc_ << '\n';
     Instruction instruction = parser_.Decode(pc_, code);
     ImmGen_.SetCode(code);
     ImmGen_.SetSel(instruction.type);

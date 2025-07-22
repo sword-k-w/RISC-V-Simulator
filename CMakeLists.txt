@@ -5,16 +5,16 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(src/include)
 
-add_definitions(-Ddebug)
+add_definitions(-DDEBUG)
 
 add_executable(code
     src/selector.cpp
     src/arithmetic_logic_unit.cpp
-    src/data_memory.cpp
+    src/memory.cpp
     src/register_file.cpp
     src/instruction_parser.cpp
     src/branch_comparator.cpp
     src/immediate_generator.cpp
-        src/interpreter.cpp
+    src/interpreter.cpp
     src/naive_main.cpp
 )

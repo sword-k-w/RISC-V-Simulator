@@ -45,22 +45,22 @@ void Instruction::Print() const {
     case IA:
       std::cerr << "(I) ";
       switch(funct) {
-        case 0b000:
+        case 0b0000000000:
           std::cerr << "addi";
           break;
-        case 0b111:
+        case 0b1110000000:
           std::cerr << "andi";
           break;
-        case 0b110:
+        case 0b1100000000:
           std::cerr << "ori";
           break;
-        case 0b100:
+        case 0b1000000000:
           std::cerr << "xori";
           break;
-        case 0b010:
+        case 0b0100000000:
           std::cerr << "slti";
           break;
-        case 0b011:
+        case 0b0110000000:
           std::cerr << "sltiu";
           break;
         default:
@@ -88,19 +88,19 @@ void Instruction::Print() const {
     case IM:
       std::cerr << "(I) ";
       switch (funct) {
-        case 0b000:
+        case 0b0000000000:
           std::cerr << "lb";
           break;
-        case 0b100:
+        case 0b1000000000:
           std::cerr << "lbu";
           break;
-        case 0b001:
+        case 0b0010000000:
           std::cerr << "lh";
           break;
-        case 0b101:
+        case 0b1010000000:
           std::cerr << "lhu";
           break;
-        case 0b010:
+        case 0b0100000000:
           std::cerr << "lw";
           break;
         default:
@@ -109,25 +109,25 @@ void Instruction::Print() const {
       std::cerr << " x" << rd << " " << immediate << "(x" << rs1 << ")";
       break;
     case IC:
-      assert(funct == 0b000);
+      assert(funct == 0b0000000000);
       std::cerr << "(I) jalr x" << rd << " x" << rs1 << " " << immediate;
       break;
     case S:
       std::cerr << "(S) ";
       switch (funct) {
-        case 0b000:
+        case 0b0000000000:
           std::cerr << "sb";
           break;
-        case 0b001:
+        case 0b0010000000:
           std::cerr << "sh";
           break;
-        case 0b010:
+        case 0b0100000000:
           std::cerr << "sw";
           break;
         default:
           assert(0);
       }
-      std::cerr << "x" << rs2 << " " << immediate << "(x" << rs1 << ")";
+      std::cerr << " x" << rs2 << " " << immediate << "(x" << rs1 << ")";
       break;
     case B:
       std::cerr << "(B) ";
@@ -169,6 +169,15 @@ void Instruction::Print() const {
   }
 }
 
+void Instruction::ExtendSign(int bit) {
+  if (immediate >> bit & 1) {
+    for (int i = bit + 1; i < 32; ++i) {
+      immediate |= 1u << i;
+    }
+  }
+}
+
+
 InstructionParser::InstructionParser() {
 #ifdef DEBUG
   debug_mode_ = true;
@@ -179,7 +188,7 @@ InstructionParser::InstructionParser() {
 
 // left open, right closed
 uint32_t InstructionParser::Extract(const uint32_t &code, const int &l, const int &r) {
-  return (code & ((1u << r) - 1)) >> l;
+  return r == 32 ? code >> l : (code & ((1u << r) - 1u)) >> l;
 }
 
 Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &code) {
@@ -203,10 +212,12 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
         res.rs1 = Extract(code, 15, 20);
         res.immediate = Extract(code, 20, 25);
       } else {
+        res.funct <<= 7;
         res.type = IA;
         res.rd = Extract(code, 7, 12);
         res.rs1 = Extract(code, 15, 20);
-        res.immediate = Extract(code, 20, 32) << 7;
+        res.immediate = Extract(code, 20, 32);
+        res.ExtendSign(11);
       }
       break;
     case 0b0000011:
@@ -215,6 +226,7 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       res.rs1 = Extract(code, 15, 20);
       res.immediate = Extract(code, 20, 32);
       res.funct = Extract(code, 12, 15) << 7;
+      res.ExtendSign(11);
       break;
     case 0b1100111:
       res.type = IC;
@@ -222,6 +234,7 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       res.rs1 = Extract(code, 15, 20);
       res.immediate = Extract(code, 20, 32);
       res.funct = Extract(code, 12, 15) << 7;
+      res.ExtendSign(11);
       break;
     case 0b0100011:
       res.type = S;
@@ -229,37 +242,39 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       res.rs2 = Extract(code, 20, 25);
       res.immediate = Extract(code, 25, 32) << 5 | Extract(code, 7, 12);
       res.funct = Extract(code, 12, 15) << 7;
+      res.ExtendSign(11);
       break;
     case 0b1100011:
       res.type = B;
       res.rs1 = Extract(code, 15, 20);
       res.rs2 = Extract(code, 20, 25);
-      res.immediate = Extract(code, 31, 32) << 11;
-      res.immediate |= Extract(code, 7, 8) << 10;
-      res.immediate |= Extract(code, 25, 31) << 4;
-      res.immediate |= Extract(code, 8, 12);
+      res.immediate = Extract(code, 31, 32) << 12;
+      res.immediate |= Extract(code, 7, 8) << 11;
+      res.immediate |= Extract(code, 25, 31) << 5;
+      res.immediate |= Extract(code, 8, 12) << 1;
       res.funct = Extract(code, 12, 15) << 7;
+      res.ExtendSign(12);
       break;
     case 0b0010111:
       res.type = Uauipc;
       res.rd = Extract(code, 7, 12);
-      res.immediate = Extract(code, 12, 32);
+      res.immediate = Extract(code, 12, 32) << 12;
       break;
     case 0b0110111:
       res.type = Ului;
       res.rd = Extract(code, 7, 12);
-      res.immediate = Extract(code, 12, 32);
+      res.immediate = Extract(code, 12, 32) << 12;
       break;
     case 0b1101111:
       res.type = J;
       res.rd = Extract(code, 7, 12);
-      res.immediate = Extract(code, 31, 32) << 19;
-      res.immediate |= Extract(code, 12, 20) << 11;
-      res.immediate |= Extract(code, 20, 21) << 10;
-      res.immediate |= Extract(code, 21, 31);
+      res.immediate = Extract(code, 31, 32) << 20;
+      res.immediate |= Extract(code, 12, 20) << 12;
+      res.immediate |= Extract(code, 20, 21) << 11;
+      res.immediate |= Extract(code, 21, 31) << 1;
+      res.ExtendSign(20);
       break;
     default:
-      std::cerr << opcode << '\n';
       assert(0);
   }
   if (debug_mode_) {
@@ -267,6 +282,7 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
     res.Print();
     std::cerr << '\n';
   }
+  return res;
 }
 
 

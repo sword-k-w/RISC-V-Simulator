@@ -1,4 +1,4 @@
-#include "data_memory.h"
+#include "memory.h"
 
 namespace sjtu {
 
