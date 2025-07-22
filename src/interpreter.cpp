@@ -7,13 +7,14 @@ Interpreter::Interpreter() : pc_(0u) {}
 void Interpreter::Run() {
   while (true) {
     // PC
-    IMEM_.SetPC(pc_);
+    MEM_.SetPC(pc_);
     selectorA_.SetWire1(pc_);
     selectorPC_.SetWire0(pc_ + 4);
     selectorWB1_.SetWire1(pc_ + 4);
 
     // IMEM
-    uint32_t code = IMEM_.Result();
+    uint32_t code = MEM_.InstructionResult();
+    std::cerr << pc_ << '\n';
     Instruction instruction = parser_.Decode(pc_, code);
     ImmGen_.SetCode(code);
     ImmGen_.SetSel(instruction.type);
@@ -35,7 +36,7 @@ void Interpreter::Run() {
     BranchComp_.SetWire0(tmp_data.first);
     selectorB_.SetWire0(tmp_data.second);
     BranchComp_.SetWire1(tmp_data.second);
-    DMEM_.SetInput(tmp_data.second);
+    MEM_.SetInput(tmp_data.second);
 
     if (code == 0x0ff00513) {
       std::cout << RegFile_.GetReturnValue() << '\n';
@@ -102,22 +103,22 @@ void Interpreter::Run() {
       }
     }
     uint32_t alu_res = ALU_.Result();
-    DMEM_.SetAddress(alu_res);
+    MEM_.SetAddress(alu_res);
     selectorWB0_.SetWire1(alu_res);
     selectorPC_.SetWire1(alu_res);
 
     // DMEM
-    DMEM_.SetRW(instruction.type != S);
-    DMEM_.SetUn(instruction.funct >> 9 & 1);
+    MEM_.SetRW(instruction.type != S);
+    MEM_.SetUn(instruction.funct >> 9 & 1);
     uint32_t op = instruction.funct >> 7 & 3;
     if (op == 0) {
-      DMEM_.SetSize(Byte);
+      MEM_.SetSize(Byte);
     } else if (op == 1) {
-      DMEM_.SetSize(Half);
+      MEM_.SetSize(Half);
     } else {
-      DMEM_.SetSize(Word);
+      MEM_.SetSize(Word);
     }
-    selectorWB0_.SetWire0(DMEM_.Result());
+    selectorWB0_.SetWire0(MEM_.DataResult());
 
     // selectorWB
     int WBsel = 1;
@@ -167,7 +168,7 @@ void Interpreter::Run() {
             PCsel = true;
           }
         break;
-        default:
+        default:;
       }
     }
     selectorPC_.SetSel(PCsel);

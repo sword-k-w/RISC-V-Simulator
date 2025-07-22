@@ -259,6 +259,7 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       res.immediate |= Extract(code, 21, 31);
       break;
     default:
+      std::cerr << opcode << '\n';
       assert(0);
   }
   if (debug_mode_) {

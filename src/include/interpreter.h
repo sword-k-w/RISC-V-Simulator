@@ -8,19 +8,17 @@
 #include "instruction_parser.h"
 #include "immediate_generator.h"
 #include "branch_comparator.h"
-#include "instruction_memory.h"
 
 namespace sjtu {
 
 class Interpreter {
 private:
   uint32_t pc_;
-  InstructionMemory IMEM_;
+  Memory MEM_;
   RegisterFile RegFile_;
   ImmediateGenerator ImmGen_;
   BranchComparator BranchComp_;
   ArithmeticLogicUnit ALU_;
-  DataMemeory DMEM_;
   InstructionParser parser_;
   Selector selectorA_;
   Selector selectorB_;
