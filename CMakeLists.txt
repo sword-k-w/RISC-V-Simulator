@@ -11,5 +11,6 @@ add_executable(code
     src/data_memory.cpp
     src/register_file.cpp
     src/instruction_parser.cpp
+    src/branch_comparator.cpp
     src/naive_main.cpp
 )
