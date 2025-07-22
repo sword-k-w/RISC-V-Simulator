@@ -25,9 +25,9 @@ uint32_t ImmediateGenerator::Result() const {
       res |= InstructionParser::Extract(code_, 8, 12);
       return res;
     case Uauipc:
-      return InstructionParser::Extract(code_, 12, 32);
+      return InstructionParser::Extract(code_, 12, 32) << 12;
     case Ului:
-      return InstructionParser::Extract(code_, 12, 32);
+      return InstructionParser::Extract(code_, 12, 32) << 12;
     case J:
       res = InstructionParser::Extract(code_, 7, 12);
       res = InstructionParser::Extract(code_, 31, 32) << 19;

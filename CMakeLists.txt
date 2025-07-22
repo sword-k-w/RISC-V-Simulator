@@ -14,5 +14,6 @@ add_executable(code
     src/branch_comparator.cpp
     src/immediate_generator.cpp
     src/instruction_memory.cpp
+    src/interpreter.cpp
     src/naive_main.cpp
 )

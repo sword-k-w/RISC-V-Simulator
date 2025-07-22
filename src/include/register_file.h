@@ -21,6 +21,7 @@ public:
   void SetWriteIndex(const uint32_t &);
   void SetInput(const uint32_t &);
   void SetWriteEnable(const bool &);
+  uint32_t GetReturnValue() const;
 };
 
 }

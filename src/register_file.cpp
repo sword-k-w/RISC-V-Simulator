@@ -35,4 +35,8 @@ void RegisterFile::SetWriteEnable(const bool &write_enable) {
   write_enable_ = write_enable;
 }
 
+uint32_t RegisterFile::GetReturnValue() const {
+  return register_[10] & 255;
+}
+
 }

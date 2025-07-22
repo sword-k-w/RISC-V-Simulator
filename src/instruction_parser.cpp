@@ -206,7 +206,7 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
         res.type = IA;
         res.rd = Extract(code, 7, 12);
         res.rs1 = Extract(code, 15, 20);
-        res.immediate = Extract(code, 20, 32);
+        res.immediate = Extract(code, 20, 32) << 7;
       }
       break;
     case 0b0000011:
@@ -214,21 +214,21 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       res.rd = Extract(code, 7, 12);
       res.rs1 = Extract(code, 15, 20);
       res.immediate = Extract(code, 20, 32);
-      res.funct = Extract(code, 12, 15);
+      res.funct = Extract(code, 12, 15) << 7;
       break;
     case 0b1100111:
       res.type = IC;
       res.rd = Extract(code, 7, 12);
       res.rs1 = Extract(code, 15, 20);
       res.immediate = Extract(code, 20, 32);
-      res.funct = Extract(code, 12, 15);
+      res.funct = Extract(code, 12, 15) << 7;
       break;
     case 0b0100011:
       res.type = S;
       res.rs1 = Extract(code, 15, 20);
       res.rs2 = Extract(code, 20, 25);
       res.immediate = Extract(code, 25, 32) << 5 | Extract(code, 7, 12);
-      res.funct = Extract(code, 12, 15);
+      res.funct = Extract(code, 12, 15) << 7;
       break;
     case 0b1100011:
       res.type = B;
@@ -238,7 +238,7 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       res.immediate |= Extract(code, 7, 8) << 10;
       res.immediate |= Extract(code, 25, 31) << 4;
       res.immediate |= Extract(code, 8, 12);
-      res.funct = Extract(code, 12, 15);
+      res.funct = Extract(code, 12, 15) << 7;
       break;
     case 0b0010111:
       res.type = Uauipc;
