@@ -24,9 +24,10 @@ class InstructionParser {
 private:
   bool debug_mode_;
 
-  uint32_t Extract(const uint32_t &, const int &, const int &);
+
 public:
   InstructionParser();
+  static uint32_t Extract(const uint32_t &, const int &, const int &);
   Instruction Decode(const uint32_t &, const uint32_t &);
 };
 
