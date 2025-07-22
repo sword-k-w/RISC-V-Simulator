@@ -10,5 +10,6 @@ add_executable(code
     src/arithmetic_logic_unit.cpp
     src/data_memory.cpp
     src/register_file.cpp
+    src/instruction_parser.cpp
     src/naive_main.cpp
 )
