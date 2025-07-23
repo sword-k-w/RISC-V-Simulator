@@ -132,22 +132,22 @@ void Instruction::Print() const {
     case B:
       std::cerr << "(B) ";
       switch (funct) {
-        case 0b000:
+        case 0b0000000000:
           std::cerr << "beq";
           break;
-        case 0b101:
+        case 0b1010000000:
           std::cerr << "bge";
           break;
-        case 0b111:
+        case 0b1110000000:
           std::cerr << "bgeu";
           break;
-        case 0b100:
+        case 0b1000000000:
           std::cerr << "blt";
           break;
-        case 0b110:
+        case 0b1100000000:
           std::cerr << "bltu";
           break;
-        case 0b001:
+        case 0b0010000000:
           std::cerr << "bne";
           break;
         default:
@@ -284,6 +284,5 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
   }
   return res;
 }
-
 
 }

@@ -23,9 +23,9 @@ uint32_t ArithmeticLogicUnit::Result() const {
     case Sra:
       return static_cast<uint32_t>(static_cast<int>(wireA_) >> wireB_);
     case Slt:
-      return wireA_ < wireB_ ? 1u : 0u;
-    case Sltu:
       return static_cast<int>(wireA_) < static_cast<int>(wireB_) ? 1u : 0u;
+    case Sltu:
+      return wireA_ < wireB_ ? 1u : 0u;
   }
   assert(0);
 }

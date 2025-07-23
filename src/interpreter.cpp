@@ -7,7 +7,6 @@ Interpreter::Interpreter() : pc_(0u) {}
 void Interpreter::Run() {
   while (true) {
     // PC
-    std::cerr << pc_ << '\n';
     MEM_.SetPC(pc_);
     selectorA_.SetWire1(pc_);
     selectorPC_.SetWire0(pc_ + 4);
@@ -44,7 +43,7 @@ void Interpreter::Run() {
     }
 
     // BranchComp
-    BranchComp_.SetBrUn(instruction.funct >> 1 & 1);
+    BranchComp_.SetBrUn(instruction.funct >> 8 & 1);
     std::pair<bool, bool> branch_res = BranchComp_.Result();
 
     // selectorA
@@ -64,7 +63,7 @@ void Interpreter::Run() {
     ALU_.SetWireB(selectorB_.Result());
 
     // ALU
-    if (instruction.type == Ului) {
+    if (instruction.type != R && instruction.type != IA && instruction.type != Istar) {
       ALU_.SetSel(Add);
     } else {
       switch (instruction.funct) {
@@ -173,6 +172,7 @@ void Interpreter::Run() {
     }
     selectorPC_.SetSel(PCsel);
     pc_ = selectorPC_.Result();
+    // RegFile_.Print();
   }
 }
 

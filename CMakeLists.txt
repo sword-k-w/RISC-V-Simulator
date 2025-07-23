@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(src/include)
 
-add_definitions(-DDEBUG)
+#add_definitions(-DDEBUG)
 
 add_executable(code
     src/selector.cpp

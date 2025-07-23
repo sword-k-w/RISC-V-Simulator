@@ -58,5 +58,4 @@ void ImmediateGenerator::SetSel(const InstructionType &sel) {
   sel_ = sel;
 }
 
-
 }

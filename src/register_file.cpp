@@ -9,7 +9,7 @@ RegisterFile::RegisterFile() : read_index1_(0u), read_index2_(0u), write_index_(
 }
 
 std::pair<uint32_t, uint32_t> RegisterFile::Result() {
-  if (write_enable_) {
+  if (write_enable_ && write_index_) {
     register_[write_index_] = input_;
   }
   return std::make_pair(register_[read_index1_], register_[read_index2_]);
@@ -38,5 +38,12 @@ void RegisterFile::SetWriteEnable(const bool &write_enable) {
 uint32_t RegisterFile::GetReturnValue() const {
   return register_[10] & 255;
 }
+
+void RegisterFile::Print() const {
+  for (int i = 0; i < 32; ++i) {
+    std::cerr << "x" << i << " = " << register_[i] << '\n';
+  }
+}
+
 
 }

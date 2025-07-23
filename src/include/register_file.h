@@ -2,6 +2,7 @@
 #define REGISTER_FILE_H
 #include <cstdint>
 #include <utility>
+#include <iostream>
 
 namespace sjtu {
 
@@ -22,6 +23,7 @@ public:
   void SetInput(const uint32_t &);
   void SetWriteEnable(const bool &);
   uint32_t GetReturnValue() const;
+  void Print() const;
 };
 
 }

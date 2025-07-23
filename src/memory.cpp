@@ -43,13 +43,13 @@ uint32_t Memory::DataResult() {
     }
   }
   switch (type_) {
-    case Byte:
-      memory_[address_] = input_ & 255;
-    case Half:
-      memory_[address_ + 1] = input_ >> 8 & 255;
     case Word:
       memory_[address_ + 2] = input_ >> 16 & 255;
       memory_[address_ + 3] = input_ >> 24 & 255;
+    case Half:
+      memory_[address_ + 1] = input_ >> 8 & 255;
+    case Byte:
+      memory_[address_] = input_ & 255;
   }
   return input_;
 }
