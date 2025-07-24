@@ -1,4 +1,4 @@
-#include "instruction_parser.h"
+#include "pipeline_module/instruction_parser.h"
 
 namespace sjtu {
 

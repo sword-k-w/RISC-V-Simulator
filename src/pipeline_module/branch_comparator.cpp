@@ -1,4 +1,4 @@
-#include "branch_comparator.h"
+#include "pipeline_module/branch_comparator.h"
 
 namespace sjtu {
 

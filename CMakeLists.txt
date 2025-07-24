@@ -8,13 +8,13 @@ include_directories(src/include)
 #add_definitions(-DDEBUG)
 
 add_executable(code
-    src/selector.cpp
-    src/arithmetic_logic_unit.cpp
-    src/memory.cpp
-    src/register_file.cpp
-    src/instruction_parser.cpp
-    src/branch_comparator.cpp
-    src/immediate_generator.cpp
+    src/pipeline_module/selector.cpp
+    src/pipeline_module/arithmetic_logic_unit.cpp
+    src/pipeline_module/memory.cpp
+    src/pipeline_module/register_file.cpp
+    src/pipeline_module/instruction_parser.cpp
+    src/pipeline_module/branch_comparator.cpp
+    src/pipeline_module/immediate_generator.cpp
     src/interpreter.cpp
     src/naive_main.cpp
 )

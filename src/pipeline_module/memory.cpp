@@ -1,4 +1,4 @@
-#include "memory.h"
+#include "pipeline_module/memory.h"
 
 namespace sjtu {
 

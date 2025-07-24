@@ -1,13 +1,13 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
-#include "selector.h"
-#include "arithmetic_logic_unit.h"
-#include "memory.h"
-#include "register_file.h"
-#include "instruction_parser.h"
-#include "immediate_generator.h"
-#include "branch_comparator.h"
+#include "pipeline_module/selector.h"
+#include "pipeline_module/arithmetic_logic_unit.h"
+#include "pipeline_module/memory.h"
+#include "pipeline_module/register_file.h"
+#include "pipeline_module/instruction_parser.h"
+#include "pipeline_module/immediate_generator.h"
+#include "pipeline_module/branch_comparator.h"
 
 namespace sjtu {
 

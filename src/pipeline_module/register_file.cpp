@@ -1,4 +1,4 @@
-#include "register_file.h"
+#include "pipeline_module/register_file.h"
 
 namespace sjtu {
 

@@ -1,7 +1,7 @@
 #ifndef IMMEDIATE_GENERATOR_H
 #define IMMEDIATE_GENERATOR_H
 #include <cstdint>
-#include "instruction_parser.h"
+#include "pipeline_module/instruction_parser.h"
 
 namespace sjtu {
 

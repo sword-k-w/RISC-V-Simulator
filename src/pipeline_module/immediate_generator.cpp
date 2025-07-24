@@ -1,4 +1,4 @@
-#include "immediate_generator.h"
+#include "pipeline_module/immediate_generator.h"
 
 namespace sjtu {
 
