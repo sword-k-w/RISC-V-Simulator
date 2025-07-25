@@ -7,14 +7,23 @@ include_directories(src/include)
 
 #add_definitions(-DDEBUG)
 
+#add_executable(code
+#    src/pipeline_module/selector.cpp
+#    src/pipeline_module/arithmetic_logic_unit.cpp
+#    src/pipeline_module/memory.cpp
+#    src/pipeline_module/register_file.cpp
+#    src/pipeline_module/instruction_parser.cpp
+#    src/pipeline_module/branch_comparator.cpp
+#    src/pipeline_module/immediate_generator.cpp
+#    src/interpreter.cpp
+#    src/naive_main.cpp
+#)
+
 add_executable(code
-    src/pipeline_module/selector.cpp
-    src/pipeline_module/arithmetic_logic_unit.cpp
-    src/pipeline_module/memory.cpp
-    src/pipeline_module/register_file.cpp
-    src/pipeline_module/instruction_parser.cpp
-    src/pipeline_module/branch_comparator.cpp
-    src/pipeline_module/immediate_generator.cpp
-    src/interpreter.cpp
-    src/naive_main.cpp
+        src/Tomasulo_module/arithmetic_logic_unit.cpp
+        src/Tomasulo_module/instruction_parser.cpp
+        src/Tomasulo_module/reservation_station.cpp
+        src/Tomasulo_module/register_file.cpp
+        src/simulator.cpp
+        src/main.cpp
 )
