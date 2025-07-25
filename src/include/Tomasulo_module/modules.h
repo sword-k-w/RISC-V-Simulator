@@ -9,6 +9,12 @@ class ReservationStation;
 
 class RegisterFile;
 
+class ReorderBuffer;
+
+class LoadStoreBuffer;
+
+class Memory;
+
 }
 
 #endif //MODULES_H

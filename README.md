@@ -6,7 +6,7 @@
 
 ### idea
 
-```
+``` c++
 class module1 {
 private:
   type info1;
@@ -19,7 +19,7 @@ private:
   ...  // point to other modules and pass info to next cycle
 public:
   void Run(); // simulate single cycle
-  void Copy(); // copy all infos except ptrs
+  void Copy(const module1 &); // copy all infos except ptrs
 } m1[2];
 
 class module2 {
@@ -28,4 +28,5 @@ class module2 {
 
 m1[0].ptr = &m2[1];
 m1[0].ptr = &m2[0];
+
 ```

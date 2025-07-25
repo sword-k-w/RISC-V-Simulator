@@ -24,6 +24,9 @@ add_executable(code
         src/Tomasulo_module/instruction_parser.cpp
         src/Tomasulo_module/reservation_station.cpp
         src/Tomasulo_module/register_file.cpp
+        src/Tomasulo_module/reorder_buffer.cpp
+        src/Tomasulo_module/load_store_buffer.cpp
+        src/Tomasulo_module/memory.cpp
         src/simulator.cpp
         src/main.cpp
 )

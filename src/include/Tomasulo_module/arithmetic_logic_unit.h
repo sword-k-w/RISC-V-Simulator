@@ -21,6 +21,7 @@ private:
 public:
   ArithmeticLogicUnit();
   void Run();
+  void Copy(const ArithmeticLogicUnit &);
 };
 
 }

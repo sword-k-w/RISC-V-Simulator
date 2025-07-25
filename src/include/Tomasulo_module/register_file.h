@@ -12,6 +12,8 @@ private:
   int32_t dependence_[32]; // -1 means no dependence
 public:
   RegisterFile();
+  void Run();
+  void Copy(const RegisterFile &);
 };
 
 }

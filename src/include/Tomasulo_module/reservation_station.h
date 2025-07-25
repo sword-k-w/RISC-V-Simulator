@@ -12,8 +12,8 @@ struct ReservationStationEntry {
   bool busy_ = false;
   uint32_t val1_;
   uint32_t val2_;
-  bool ready1_;
-  bool ready2_;
+  int32_t depend1_{-1};
+  int32_t depend2_{-1};
   uint32_t dest_;
 };
 
@@ -26,6 +26,7 @@ private:
   ArithmeticLogicUnit* alu_;
 public:
   void Run();
+  void Copy(const ReservationStation &);
 };
 
 }
