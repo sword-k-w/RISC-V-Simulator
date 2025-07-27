@@ -8,16 +8,17 @@
 
 namespace sjtu {
 
-enum ArithmeticType {
-  Add, Sub, And, Or, Xor, Sll, Srl, Sra, Slt, Sltu
-};
-
 class ArithmeticLogicUnit {
   friend class ReservationStation;
 private:
+  int dest_ = -1;
   uint32_t wireA_;
   uint32_t wireB_;
-  ArithmeticType sel_;
+  InstructionType sel_;
+
+  ReorderBuffer *rob_;
+  ReservationStation *rs_;
+  LoadStoreBuffer *lsb_;
 public:
   ArithmeticLogicUnit();
   void Run();

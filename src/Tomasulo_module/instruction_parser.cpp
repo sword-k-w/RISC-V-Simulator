@@ -1,40 +1,42 @@
 #include "Tomasulo_module/instruction_parser.h"
 
+#include <inttypes.h>
+
 namespace sjtu {
 
 void Instruction::Print() const {
-  switch (type) {
+  switch (format_type) {
     case R:
       std::cerr << "(R) ";
-      switch (funct) {
-        case 0b0000000000:
+      switch (type) {
+        case Add:
           std::cerr << "add";
           break;
-        case 0b0000100000:
+        case Sub:
           std::cerr << "sub";
           break;
-        case 0b1110000000:
+        case And:
           std::cerr << "and";
           break;
-        case 0b1100000000:
+        case Or:
           std::cerr << "or";
           break;
-        case 0b1000000000:
+        case Xor:
           std::cerr << "xor";
           break;
-        case 0b0010000000:
+        case Sll:
           std::cerr << "sll";
           break;
-        case 0b1010000000:
+        case Srl:
           std::cerr << "srl";
           break;
-        case 0b1010100000:
+        case Sra:
           std::cerr << "sra";
           break;
-        case 0b0100000000:
+        case Slt:
           std::cerr << "slt";
           break;
-        case 0b0110000000:
+        case Sltu:
           std::cerr << "sltu";
           break;
         default:
@@ -44,23 +46,23 @@ void Instruction::Print() const {
       break;
     case IA:
       std::cerr << "(I) ";
-      switch(funct) {
-        case 0b0000000000:
+      switch (type) {
+        case Addi:
           std::cerr << "addi";
           break;
-        case 0b1110000000:
+        case Andi:
           std::cerr << "andi";
           break;
-        case 0b1100000000:
+        case Ori:
           std::cerr << "ori";
           break;
-        case 0b1000000000:
+        case Xori:
           std::cerr << "xori";
           break;
-        case 0b0100000000:
+        case Slti:
           std::cerr << "slti";
           break;
-        case 0b0110000000:
+        case Sltiu:
           std::cerr << "sltiu";
           break;
         default:
@@ -70,14 +72,14 @@ void Instruction::Print() const {
       break;
     case Istar:
       std::cerr << "(I*) ";
-      switch (funct) {
-        case 0b0010000000:
+      switch (type) {
+        case Slli:
           std::cerr << "slli";
           break;
-        case 0b1010000000:
+        case Srli:
           std::cerr << "srli";
           break;
-        case 0b1010100000:
+        case Srai:
           std::cerr << "srai";
           break;
         default:
@@ -87,20 +89,20 @@ void Instruction::Print() const {
       break;
     case IM:
       std::cerr << "(I) ";
-      switch (funct) {
-        case 0b0000000000:
+      switch (type) {
+        case Lb:
           std::cerr << "lb";
           break;
-        case 0b1000000000:
+        case Lbu:
           std::cerr << "lbu";
           break;
-        case 0b0010000000:
+        case Lh:
           std::cerr << "lh";
           break;
-        case 0b1010000000:
+        case Lhu:
           std::cerr << "lhu";
           break;
-        case 0b0100000000:
+        case Lw:
           std::cerr << "lw";
           break;
         default:
@@ -109,19 +111,18 @@ void Instruction::Print() const {
       std::cerr << " x" << rd << " " << immediate << "(x" << rs1 << ")";
       break;
     case IC:
-      assert(funct == 0b0000000000);
       std::cerr << "(I) jalr x" << rd << " x" << rs1 << " " << immediate;
       break;
     case S:
       std::cerr << "(S) ";
-      switch (funct) {
-        case 0b0000000000:
+      switch (type) {
+        case Sb:
           std::cerr << "sb";
           break;
-        case 0b0010000000:
+        case Sh:
           std::cerr << "sh";
           break;
-        case 0b0100000000:
+        case Sw:
           std::cerr << "sw";
           break;
         default:
@@ -131,23 +132,23 @@ void Instruction::Print() const {
       break;
     case B:
       std::cerr << "(B) ";
-      switch (funct) {
-        case 0b0000000000:
+      switch (type) {
+        case Beq:
           std::cerr << "beq";
           break;
-        case 0b1010000000:
+        case Bge:
           std::cerr << "bge";
           break;
-        case 0b1110000000:
+        case Bgeu:
           std::cerr << "bgeu";
           break;
-        case 0b1000000000:
+        case Blt:
           std::cerr << "blt";
           break;
-        case 0b1100000000:
+        case Bltu:
           std::cerr << "bltu";
           break;
-        case 0b0010000000:
+        case Bne:
           std::cerr << "bne";
           break;
         default:
@@ -155,11 +156,16 @@ void Instruction::Print() const {
       }
       std::cerr << " x" << rs1 << " x" << rs2 << " " << immediate;
       break;
-    case Uauipc:
-      std::cerr << "(U) auipc x" << rd << " " << immediate;
-      break;
-    case Ului:
-      std::cerr << "(U) lui x" << rd << " " << immediate;
+    case U:
+
+      std::cerr << "(U) ";
+      if (type == Auipc) {
+        std::cerr << "auipc";
+      } else {
+        assert(type == Lui);
+        std::cerr << "Lui";
+      }
+      std::cerr << " x" << rd << " " << immediate;
       break;
     case J:
       std::cerr << "(J) jal x" << rd << " " << immediate;
@@ -194,79 +200,203 @@ uint32_t InstructionParser::Extract(const uint32_t &code, const int &l, const in
 Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &code) {
   Instruction res;
   uint32_t opcode = Extract(code, 0, 7);
+  uint32_t funct;
   switch (opcode) {
     case 0b0110011:
-      res.type = R;
+      res.format_type = R;
       res.rd = Extract(code, 7, 12);
       res.rs1 = Extract(code, 15, 20);
       res.rs2 = Extract(code, 20, 25);
-      res.funct = Extract(code, 12, 15) << 7 | Extract(code, 25, 32);
+      funct = Extract(code, 12, 15) << 7 | Extract(code, 25, 32);
+      switch (funct) {
+        case 0b0000000000:
+          res.type = Add;
+          break;
+        case 0b0000100000:
+          res.type = Sub;;
+          break;
+        case 0b1110000000:
+          res.type = And;
+          break;
+        case 0b1100000000:
+          res.type = Or;
+          break;
+        case 0b1000000000:
+          res.type = Xor;
+          break;
+        case 0b0010000000:
+          res.type = Sll;
+          break;
+        case 0b1010000000:
+          res.type = Srl;
+          break;
+        case 0b1010100000:
+          res.type = Sra;
+          break;
+        case 0b0100000000:
+          res.type = Slt;
+          break;
+        case 0b0110000000:
+          res.type = Sltu;
+          break;
+        default:
+          assert(0);
+      }
       break;
     case 0b0010011:
-      res.funct = Extract(code, 12, 15);
-      if (res.funct == 0b001 || res.funct == 0b101) {
-        res.funct <<= 7;
-        res.funct |= Extract(code, 25, 32);
-        res.type = Istar;
+      funct = Extract(code, 12, 15);
+      if (funct == 0b001 || funct == 0b101) {
+        res.format_type = Istar;
         res.rd = Extract(code, 7, 12);
         res.rs1 = Extract(code, 15, 20);
         res.immediate = Extract(code, 20, 25);
+        funct <<= 7;
+        funct |= Extract(code, 25, 32);
+        switch (funct) {
+          case 0b0010000000:
+            res.type = Slli;
+            break;
+          case 0b1010000000:
+            res.type = Srli;
+            break;
+          case 0b1010100000:
+            res.type = Srai;
+            break;
+          default:
+            assert(0);
+        }
       } else {
-        res.funct <<= 7;
-        res.type = IA;
+        res.format_type = IA;
         res.rd = Extract(code, 7, 12);
         res.rs1 = Extract(code, 15, 20);
         res.immediate = Extract(code, 20, 32);
         res.ExtendSign(11);
+        switch (funct) {
+          case 0b000:
+            res.type = Addi;
+            break;
+          case 0b111:
+            res.type = Andi;
+            break;
+          case 0b110:
+            res.type = Ori;
+            break;
+          case 0b100:
+            res.type = Xori;
+            break;
+          case 0b010:
+            res.type = Slti;
+            break;
+          case 0b011:
+            res.type = Sltiu;
+            break;
+          default:
+            assert(0);
+        }
       }
       break;
     case 0b0000011:
-      res.type = IM;
+      res.format_type = IM;
       res.rd = Extract(code, 7, 12);
       res.rs1 = Extract(code, 15, 20);
       res.immediate = Extract(code, 20, 32);
-      res.funct = Extract(code, 12, 15) << 7;
+      funct = Extract(code, 12, 15);
+      switch (funct) {
+        case 0b000:
+          res.type = Lb;
+          break;
+        case 0b100:
+          res.type = Lbu;
+          break;
+        case 0b001:
+          res.type = Lh;
+          break;
+        case 0b101:
+          res.type= Lhu;
+          break;
+        case 0b010:
+          res.type = Lw;
+          break;
+        default:
+          assert(0);
+      }
       res.ExtendSign(11);
       break;
     case 0b1100111:
-      res.type = IC;
+      res.format_type = IC;
       res.rd = Extract(code, 7, 12);
       res.rs1 = Extract(code, 15, 20);
       res.immediate = Extract(code, 20, 32);
-      res.funct = Extract(code, 12, 15) << 7;
       res.ExtendSign(11);
+      assert(Extract(code, 12, 15) == 0b000);
+      res.type = Jalr;
       break;
     case 0b0100011:
-      res.type = S;
+      res.format_type = S;
       res.rs1 = Extract(code, 15, 20);
       res.rs2 = Extract(code, 20, 25);
       res.immediate = Extract(code, 25, 32) << 5 | Extract(code, 7, 12);
-      res.funct = Extract(code, 12, 15) << 7;
       res.ExtendSign(11);
+      funct = Extract(code, 12, 15);
+      switch (funct) {
+        case 0b000:
+          res.type = Sb;
+          break;
+        case 0b001:
+          res.type = Sh;
+          break;
+        case 0b010:
+          res.type = Sw;
+          break;
+        default:
+          assert(0);
+      }
       break;
     case 0b1100011:
-      res.type = B;
+      res.format_type = B;
       res.rs1 = Extract(code, 15, 20);
       res.rs2 = Extract(code, 20, 25);
       res.immediate = Extract(code, 31, 32) << 12;
       res.immediate |= Extract(code, 7, 8) << 11;
       res.immediate |= Extract(code, 25, 31) << 5;
       res.immediate |= Extract(code, 8, 12) << 1;
-      res.funct = Extract(code, 12, 15) << 7;
       res.ExtendSign(12);
+      funct = Extract(code, 12, 15);
+      switch (funct) {
+        case 0b000:
+          res.type = Beq;
+          break;
+        case 0b101:
+          res.type = Bge;
+          break;
+        case 0b111:
+          res.type = Bgeu;
+          break;
+        case 0b100:
+          res.type = Blt;
+          break;
+        case 0b110:
+          res.type = Bltu;
+          break;
+        case 0b001:
+          res.type = Bne;
+          break;
+        default:
+          assert(0);
+      }
       break;
     case 0b0010111:
-      res.type = Uauipc;
+      res.format_type = U;
       res.rd = Extract(code, 7, 12);
       res.immediate = Extract(code, 12, 32) << 12;
       break;
     case 0b0110111:
-      res.type = Ului;
+      res.format_type = U;
       res.rd = Extract(code, 7, 12);
       res.immediate = Extract(code, 12, 32) << 12;
       break;
     case 0b1101111:
-      res.type = J;
+      res.format_type = J;
       res.rd = Extract(code, 7, 12);
       res.immediate = Extract(code, 31, 32) << 20;
       res.immediate |= Extract(code, 12, 20) << 12;

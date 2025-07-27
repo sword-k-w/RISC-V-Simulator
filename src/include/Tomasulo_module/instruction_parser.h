@@ -6,17 +6,25 @@
 
 namespace sjtu {
 
+enum FormatType {
+  R, IA, Istar, IM, IC, S, B, U, J
+};
+
 enum InstructionType {
-  R, IA, Istar, IM, IC, S, B, Uauipc, Ului, J
+  Add, Sub, And, Or, Xor, Sll, Srl, Sra, Slt, Sltu,
+  Addi, Andi, Ori, Xori, Slli, Srli, Srai, Slti, Sltiu,
+  Lb, Lbu, Lh, Lhu, Lw, Sb, Sh, Sw,
+  Beq, Bge, Bgeu, Blt, Bltu, Bne,
+  Jal, Jalr, Auipc, Lui
 };
 
 struct Instruction {
+  FormatType format_type;
   InstructionType type;
   uint32_t rd;
   uint32_t rs1;
   uint32_t rs2;
   int immediate;
-  uint32_t funct;
   void Print() const;
   void ExtendSign(int bit);
 };

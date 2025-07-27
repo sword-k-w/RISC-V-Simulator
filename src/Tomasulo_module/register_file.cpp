@@ -7,5 +7,13 @@ RegisterFile::RegisterFile() {
   memset(dependence_, -1, sizeof(dependence_));
 }
 
+void RegisterFile::Run() {
+
+  if (whether_dependence_) {
+    dependence_[new_reg_id] = new_dependence_;
+  }
+}
+
+
 
 }
