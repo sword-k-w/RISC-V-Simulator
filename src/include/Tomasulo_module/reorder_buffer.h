@@ -3,6 +3,7 @@
 #include "Tomasulo_module/modules.h"
 #include <cstdint>
 
+#include "Tomasulo_module/predictor.h"
 #include "Tomasulo_module/instruction_parser.h"
 
 namespace sjtu {
@@ -29,6 +30,8 @@ private:
   Memory *mem_;
   ReservationStation *rs_;
   RegisterFile *rf_;
+  LoadStoreBuffer *lsb_;
+  Predictor *predictor_;
 public:
   void Run();
   void Copy(const ReorderBuffer &);

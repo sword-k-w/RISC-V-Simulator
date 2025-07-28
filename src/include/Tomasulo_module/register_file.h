@@ -11,6 +11,8 @@ class RegisterFile {
   friend class Memory;
   friend class ReorderBuffer;
 private:
+  bool predict_failed_ = false;
+
   bool whether_dependence_ = false;
   uint32_t new_reg_id_;
   int32_t new_dependence_;

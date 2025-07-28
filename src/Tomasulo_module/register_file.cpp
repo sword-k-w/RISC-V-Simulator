@@ -8,10 +8,17 @@ RegisterFile::RegisterFile() {
 }
 
 void RegisterFile::Run() {
+  if (predict_failed_) {
+    for (int i = 0; i < 32; ++i) {
+      dependence_[i] = -1;
+    }
+  }
   if (whether_commit_) {
     if (dependence_[commit_reg_id_] == commit_rob_id_) {
       dependence_[commit_reg_id_] = -1;
-      reg_[commit_reg_id_] = commit_value_;
+      if (commit_reg_id_) {
+        reg_[commit_reg_id_] = commit_value_;
+      }
     }
     whether_commit_ = false;
   }

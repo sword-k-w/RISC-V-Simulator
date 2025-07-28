@@ -5,6 +5,12 @@
 namespace sjtu {
 
 void ReservationStation::Run() {
+  if (predict_failed_) {
+    for (int i = 0; i < 32; ++i) {
+      entry_[i].busy = false;
+    }
+    predict_failed_ = false;
+  }
   if (broadcast_dest_ != -1) {
     for (int i = 0; i < 32; ++i) {
       if (entry_[i].depend1 == broadcast_dest_) {

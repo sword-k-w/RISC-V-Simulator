@@ -27,6 +27,7 @@ add_executable(code
         src/Tomasulo_module/reorder_buffer.cpp
         src/Tomasulo_module/load_store_buffer.cpp
         src/Tomasulo_module/memory.cpp
+        src/Tomasulo_module/predictor.cpp
         src/simulator.cpp
         src/main.cpp
 )

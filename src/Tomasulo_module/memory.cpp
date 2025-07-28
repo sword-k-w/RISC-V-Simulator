@@ -32,6 +32,12 @@ Memory::Memory() : instruction_parser_() {
 }
 
 void Memory::RunPC() {
+  if (predict_failed_) {
+    pc_ = new_pc_;
+    cur_instruction_ = instruction_parser_.Decode(pc_, GetInstruction());
+    predict_failed_ = false;
+  }
+
   if ((las_rob_tail_ + 1) % 32 == las_rob_head_) {
     rob_->whether_new_instruction_ = false;
     rs_->whether_new_instruction_ = false;
@@ -52,6 +58,18 @@ void Memory::RunPC() {
   }
   if (cur_instruction_.format_type == B) {
     // TODO
+    bool predict = predictor_->Predict();
+    uint32_t tmp = pc_;
+    if (predict) {
+      pc_ += cur_instruction_.immediate;
+      tmp += 4;
+    } else {
+      pc_ += 4;
+      tmp += cur_instruction_.immediate;
+    }
+    cur_instruction_ = instruction_parser_.Decode(pc_, GetInstruction());
+    cur_instruction_.predict = predict;
+    cur_instruction_.immediate = tmp;
   } else if (cur_instruction_.format_type == J) {
     pc_ += cur_instruction_.immediate;
     cur_instruction_ = instruction_parser_.Decode(pc_, GetInstruction());

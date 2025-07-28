@@ -23,6 +23,8 @@ class ReservationStation {
   friend class Memory;
   friend class ArithmeticLogicUnit;
 private:
+  bool predict_failed_ = false;
+
   uint32_t las_rob_head_;
   uint32_t las_rob_tail_;
   bool whether_new_instruction_ = false;
