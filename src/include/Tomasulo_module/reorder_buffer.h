@@ -27,12 +27,12 @@ private:
   uint32_t head_ = 0;
   uint32_t tail_ = 0;
   RoBEntry entry_[32];
+public:
   Memory *mem_;
   ReservationStation *rs_;
   RegisterFile *rf_;
   LoadStoreBuffer *lsb_;
   Predictor *predictor_;
-public:
   void Run();
   void Copy(const ReorderBuffer &);
 };

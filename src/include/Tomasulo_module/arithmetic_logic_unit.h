@@ -16,10 +16,10 @@ private:
   uint32_t wireB_;
   InstructionType sel_;
 
+public:
   ReorderBuffer *rob_;
   ReservationStation *rs_;
   LoadStoreBuffer *lsb_;
-public:
   ArithmeticLogicUnit();
   void Run();
   void Copy(const ArithmeticLogicUnit &);

@@ -14,7 +14,9 @@ uint32_t HexDecoder(char c) {
   return c - 'A' + 10;
 }
 
-Memory::Memory() : instruction_parser_() {
+Memory::Memory() {}
+
+void Memory::Init() {
   std::string tmp;
   uint32_t cur_address = 0u;
   while (std::cin >> tmp) {
@@ -30,6 +32,7 @@ Memory::Memory() : instruction_parser_() {
   }
   cur_instruction_ = instruction_parser_.Decode(pc_, GetInstruction());
 }
+
 
 void Memory::RunPC() {
   if (predict_failed_) {

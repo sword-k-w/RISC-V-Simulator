@@ -35,9 +35,9 @@ private:
 
   ReservationStationEntry entry_[32];
 
+public:
   RegisterFile* old_rf_;
   ArithmeticLogicUnit* alu_;
-public:
   void Run();
   void Copy(const ReservationStation &);
 };

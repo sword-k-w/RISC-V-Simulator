@@ -23,12 +23,13 @@ private:
   Instruction cur_instruction_;
   std::unordered_map<uint32_t, uint32_t> memory_;
 
+public:
   ReorderBuffer *rob_;
   ReservationStation *rs_;
   RegisterFile *rf_;
   Predictor *predictor_;
-public:
   Memory();
+  void Init();
   void RunPC();
   void RunMemory();
   void Copy(const Memory &);

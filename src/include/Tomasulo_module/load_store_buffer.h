@@ -16,8 +16,8 @@ private:
   uint32_t head_ = 0;
   uint32_t tail_ = 0;
 
-  ReorderBuffer *old_rob_;
 public:
+  ReorderBuffer *old_rob_;
   LoadStoreBuffer();
   void Run();
   void Copy(const LoadStoreBuffer &);

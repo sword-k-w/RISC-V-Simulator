@@ -15,6 +15,11 @@ void ReorderBuffer::Run() {
   }
 
   if (head_ < tail_ && entry_[head_].ready) {
+    if (entry_[head_].instruction.type == Addi && entry_[head_].instruction.rd == 10
+      && entry_[head_].instruction.immediate == 255 && entry_[head_].instruction.rs1 == 0) {
+      std::cout << (rf_->reg_[10] & 255) << '\n';
+      exit(0);
+    }
     if (entry_[head_].instruction.format_type == B) {
       // TODO
       predictor_->Feedback(entry_[head_].value);
