@@ -39,7 +39,12 @@ void ReservationStation::Run() {
     entry_[index].busy = true;
     entry_[index].type = new_instruction_.type;
     entry_[index].dest = las_rob_tail_;
-    if (new_instruction_.format_type == S) {
+    if (new_instruction_.format_type == J || new_instruction_.format_type == IC || new_instruction_.format_type == U) {
+      entry_[index].depend1 = -1;
+      entry_[index].depend2 = -1;
+      entry_[index].val1 = new_instruction_.immediate;
+      entry_[index].val2 = 0;
+    } else if (new_instruction_.format_type == S) {
       entry_[index].immediate_S = new_instruction_.immediate;
       if (old_rf_->dependence_[new_instruction_.rs1] == -1) {
         entry_[index].depend1 = -1;
@@ -56,16 +61,11 @@ void ReservationStation::Run() {
     } else if (new_instruction_.format_type != R && new_instruction_.format_type != B) {
       entry_[index].depend2 = -1;
       entry_[index].val2 = new_instruction_.immediate;
-      if (new_instruction_.format_type == U) {
+      if (old_rf_->dependence_[new_instruction_.rs1] == -1) {
         entry_[index].depend1 = -1;
-        entry_[index].val1 = 0;
+        entry_[index].val1 = old_rf_->reg_[new_instruction_.rs1];
       } else {
-        if (old_rf_->dependence_[new_instruction_.rs1] == -1) {
-          entry_[index].depend1 = -1;
-          entry_[index].val1 = old_rf_->reg_[new_instruction_.rs1];
-        } else {
-          entry_[index].depend1 = old_rf_->dependence_[new_instruction_.rs1];
-        }
+        entry_[index].depend1 = old_rf_->dependence_[new_instruction_.rs1];
       }
     } else {
       if (old_rf_->dependence_[new_instruction_.rs1] == -1) {
@@ -102,6 +102,13 @@ void ReservationStation::Run() {
   if (flag) {
     alu_->dest_ = -1;
   }
+}
+
+void ReservationStation::Copy(const ReservationStation &other) {
+  predict_failed_ = other.predict_failed_;
+  las_rob_tail_ = other.las_rob_tail_;
+  whether_new_instruction_ = other.whether_new_instruction_;
+  new_instruction_ = other.new_instruction_;
 }
 
 }

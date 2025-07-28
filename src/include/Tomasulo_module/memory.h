@@ -13,6 +13,8 @@ class Memory {
   friend class ReorderBuffer;
   friend class LoadStoreBuffer;
 private:
+  bool thaw_ = false;
+
   bool predict_failed_ = false;
   uint32_t new_pc_;
 
@@ -29,9 +31,9 @@ private:
   uint32_t commit_value_;
   uint32_t commit_dest_;
 
+  bool jalr_frozen_ = false;
   InstructionParser instruction_parser_;
   uint32_t pc_ = 0;
-  Instruction cur_instruction_;
   std::unordered_map<uint32_t, uint32_t> memory_;
 
 public:

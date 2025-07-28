@@ -66,4 +66,16 @@ void LoadStoreBuffer::Run() {
   }
 }
 
+void LoadStoreBuffer::Copy(const LoadStoreBuffer &other) {
+  predict_failed_ = other.predict_failed_;
+  las_rob_tail_ = other.las_rob_tail_;
+  whether_new_instruction_ = other.whether_new_instruction_;
+  new_instruction_ = other.new_instruction_;
+  alu_broadcast_dest_ = other.alu_broadcast_dest_;
+  alu_broadcast_address_ = other.alu_broadcast_address_;
+  rob_broadcast_dest_ = other.rob_broadcast_dest_;
+  rob_broadcast_address_ = other.rob_broadcast_address_;
+  rob_broadcast_value_ = other.rob_broadcast_value_;
+}
+
 }

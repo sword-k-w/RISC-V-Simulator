@@ -42,7 +42,6 @@ private:
 public:
   ReorderBuffer *old_rob_;
   Memory *mem_;
-  LoadStoreBuffer();
   void Run();
   void Copy(const LoadStoreBuffer &);
 };

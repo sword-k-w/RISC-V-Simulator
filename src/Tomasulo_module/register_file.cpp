@@ -28,6 +28,15 @@ void RegisterFile::Run() {
   }
 }
 
-
+void RegisterFile::Copy(const RegisterFile &other) {
+  predict_failed_ = other.predict_failed_;
+  whether_dependence_ = other.whether_dependence_;
+  new_reg_id_ = other.new_reg_id_;
+  new_dependence_ = other.new_dependence_;
+  whether_commit_ = other.whether_commit_;
+  commit_rob_id_ = other.commit_rob_id_;
+  commit_reg_id_ = other.commit_reg_id_;
+  commit_value_ = other.commit_value_;
+}
 
 }

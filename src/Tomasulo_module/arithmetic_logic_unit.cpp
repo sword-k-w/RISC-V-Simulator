@@ -79,8 +79,6 @@ void ArithmeticLogicUnit::Run() {
       default:
         assert(0);
     }
-    // TODO
-    // send result to necessary modules
     rs_->broadcast_dest_ = dest_;
     rs_->broadcast_val_ = res;
     rob_->alu_broadcast_dest_ = dest_;
@@ -95,7 +93,15 @@ void ArithmeticLogicUnit::Run() {
       lsb_->alu_broadcast_address_ = res;
     }
   }
-
 }
+
+void ArithmeticLogicUnit::Copy(const ArithmeticLogicUnit &other) {
+  dest_ = other.dest_;
+  wireA_ = other.wireA_;
+  wireB_ = other.wireB_;
+  wireS_ = other.wireS_;
+  sel_ = other.sel_;
+}
+
 
 }

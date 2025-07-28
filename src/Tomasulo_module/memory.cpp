@@ -30,60 +30,66 @@ void Memory::Init() {
       ++cur_address;
     }
   }
-  cur_instruction_ = instruction_parser_.Decode(pc_, GetInstruction());
 }
 
 
 void Memory::RunPC() {
+  if (thaw_) {
+    assert(!predict_failed_);
+    pc_ = new_pc_;
+    jalr_frozen_ = false;
+    thaw_ = false;
+  }
   if (predict_failed_) {
     pc_ = new_pc_;
-    cur_instruction_ = instruction_parser_.Decode(pc_, GetInstruction());
+    jalr_frozen_ = false;
     predict_failed_ = false;
   }
 
-  if ((las_rob_tail_ + 1) % 32 == las_rob_head_) {
+  if ((las_rob_tail_ + 1) % 32 == las_rob_head_ || jalr_frozen_) {
     rob_->whether_new_instruction_ = false;
     rs_->whether_new_instruction_ = false;
     rf_->whether_dependence_ = false;
     return;
   }
 
+  Instruction cur_instruction = instruction_parser_.Decode(pc_, GetInstruction());
+
   rob_->whether_new_instruction_ = true;
   rs_->whether_new_instruction_ = true;
-  rob_->new_instruction_ = cur_instruction_;
-  rs_->new_instruction_ = cur_instruction_;
-  if (cur_instruction_.format_type == S || cur_instruction_.format_type == B) {
+  if (cur_instruction.format_type == S || cur_instruction.format_type == B) {
     rf_->whether_dependence_ = false;
   } else {
     rf_->whether_dependence_ = true;
-    rf_->new_reg_id_ = cur_instruction_.rd;
+    rf_->new_reg_id_ = cur_instruction.rd;
     rf_->new_dependence_ = las_rob_tail_;
   }
-  if (cur_instruction_.format_type == B) {
+  if (cur_instruction.format_type == B) {
     bool predict = predictor_->Predict();
     uint32_t tmp = pc_;
     if (predict) {
-      pc_ += cur_instruction_.immediate;
+      pc_ += cur_instruction.immediate;
       tmp += 4;
     } else {
       pc_ += 4;
-      tmp += cur_instruction_.immediate;
+      tmp += cur_instruction.immediate;
     }
-    cur_instruction_ = instruction_parser_.Decode(pc_, GetInstruction());
-    cur_instruction_.predict = predict;
-    cur_instruction_.immediate = tmp;
-  } else if (cur_instruction_.format_type == J) {
-    pc_ += cur_instruction_.immediate;
-    cur_instruction_ = instruction_parser_.Decode(pc_, GetInstruction());
-  } else if (cur_instruction_.format_type == IC) {
-    // TODO
+    cur_instruction.predict = predict;
+    cur_instruction.immediate = tmp;
+  } else if (cur_instruction.format_type == J) {
+    cur_instruction.immediate = pc_ + 4;
+    pc_ += cur_instruction.immediate;
+  } else if (cur_instruction.format_type == IC) {
+    cur_instruction.immediate = pc_ + 4;
+    jalr_frozen_ = true;
   } else {
     pc_ += 4;
-    cur_instruction_ = instruction_parser_.Decode(pc_, GetInstruction());
-    if (cur_instruction_.format_type == U) {
-      cur_instruction_.immediate += pc_;
+    if (cur_instruction.type == Auipc) {
+      cur_instruction.immediate += pc_;
     }
   }
+  rob_->new_instruction_ = cur_instruction;
+  rs_->new_instruction_ = cur_instruction;
 }
 
 void Memory::RunMemory() {
@@ -129,6 +135,22 @@ void Memory::RunMemory() {
 
 uint32_t Memory::GetInstruction() {
   return memory_[pc_] | (memory_[pc_ + 1] << 8) | (memory_[pc_ + 2] << 16) | (memory_[pc_ + 3] << 24);
+}
+
+void Memory::Copy(const Memory &other) {
+  thaw_ = other.thaw_;
+  predict_failed_ = other.predict_failed_;
+  new_pc_ = other.new_pc_;
+  new_type_ = other.new_type_;
+  new_address_ = other.new_address_;
+  new_value_ = other.new_value_;
+  las_rob_head_ = other.las_rob_head_;
+  las_rob_tail_ = other.las_rob_tail_;
+  whether_commit_ = other.whether_commit_;
+  commit_type_ = other.commit_type_;
+  commit_address_ = other.commit_address_;
+  commit_value_ = other.commit_value_;
+  commit_dest_ = other.commit_dest_;
 }
 
 }

@@ -29,7 +29,10 @@ void ReorderBuffer::Run() {
       std::cout << (rf_->reg_[10] & 255) << '\n';
       exit(0);
     }
-    if (entry_[head_].instruction.format_type == B) {
+    if (entry_[head_].instruction.format_type == IC) {
+      mem_->thaw_ = true;
+      mem_->new_pc_ = entry_[head_].value;
+    } else if (entry_[head_].instruction.format_type == B) {
       predictor_->Feedback(entry_[head_].value);
       if (entry_[head_].value != entry_[head_].instruction.predict) {
         rs_->predict_failed_ = true;
@@ -69,6 +72,16 @@ void ReorderBuffer::Run() {
   mem_->las_rob_tail_ = tail_;
   lsb_->las_rob_tail_ = tail_;
   rs_->las_rob_tail_ = tail_;
+}
+
+void ReorderBuffer::Copy(const ReorderBuffer &other) {
+  whether_new_instruction_ = other.whether_new_instruction_;
+  new_instruction_ = other.new_instruction_;
+  alu_broadcast_dest_ = other.alu_broadcast_dest_;
+  alu_broadcast_val_ = other.alu_broadcast_val_;
+  alu_broadcast_address_ = other.alu_broadcast_address_;
+  lsb_broadcast_dest_ = other.lsb_broadcast_dest_;
+  lsb_broadcast_val_ = other.lsb_broadcast_val_;
 }
 
 }
