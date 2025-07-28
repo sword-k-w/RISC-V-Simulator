@@ -12,6 +12,7 @@ struct RoBEntry {
   Instruction instruction;
   bool ready = false;
   uint32_t value;
+  uint32_t address;
 };
 
 class ReorderBuffer {
@@ -21,8 +22,12 @@ private:
   bool whether_new_instruction_ = false;
   Instruction new_instruction_;
 
-  int broadcast_dest_ = -1;
-  uint32_t broadcast_val_;
+  int alu_broadcast_dest_ = -1;
+  uint32_t alu_broadcast_val_;
+  uint32_t alu_broadcast_address_;
+
+  int lsb_broadcast_dest_ = -1;
+  uint32_t lsb_broadcast_val_;
 
   uint32_t head_ = 0;
   uint32_t tail_ = 0;

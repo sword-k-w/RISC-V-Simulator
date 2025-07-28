@@ -1,5 +1,7 @@
 #include "Tomasulo_module/load_store_buffer.h"
 
+#include <Tomasulo_module/memory.h>
+
 namespace sjtu {
 
 void LoadStoreBuffer::Run() {
@@ -7,6 +9,60 @@ void LoadStoreBuffer::Run() {
     head_ = 0;
     tail_ = 0;
     predict_failed_ = false;
+    waiting_cycle_ = -1;
+    return;
+  }
+
+  if (alu_broadcast_dest_ != -1) {
+    for (int i = head_; i < tail_; ++i) {
+      if (entry[i].dest == alu_broadcast_dest_) {
+        assert(entry[i].instruction.format_type == IM);
+        entry[i].ready = true;
+        entry[i].address = alu_broadcast_address_;
+        break;
+      }
+    }
+    alu_broadcast_dest_ = -1;
+  }
+
+  if (rob_broadcast_dest_ != -1) {
+    for (int i = head_; i < tail_; ++i) {
+      if (entry[i].dest == rob_broadcast_dest_) {
+        assert(entry[i].instruction.format_type == S);
+        entry[i].ready = true;
+        entry[i].address = rob_broadcast_address_;
+        entry[i].value = rob_broadcast_value_;
+      }
+    }
+    rob_broadcast_dest_ = -1;
+  }
+
+  if (whether_new_instruction_) {
+    assert((tail_ + 1) % 32 != head_);
+    entry[tail_].instruction = new_instruction_;
+    entry[tail_].ready = false;
+    entry[tail_].dest = las_rob_tail_;
+  }
+
+  if (waiting_cycle_ > 0) {
+    --waiting_cycle_;
+    assert(head_ < tail_ && entry[head_].ready);
+  } else if (waiting_cycle_ == 0) {
+    assert(head_ < tail_ && entry[head_].ready);
+    mem_->whether_commit_ = true;
+    mem_->commit_type_ = entry[head_].instruction.type;
+    mem_->commit_address_ = entry[head_].address;
+    if (entry[head_].instruction.format_type == S) {
+      mem_->commit_value_ = entry[head_].value;
+    } else {
+      mem_->commit_dest_ = entry[head_].dest;
+    }
+    waiting_cycle_ = -1;
+  } else if (head_ < tail_) {
+    assert(waiting_cycle_ == -1);
+    if (entry[head_].ready) {
+      waiting_cycle_ = 2;
+    }
   }
 }
 

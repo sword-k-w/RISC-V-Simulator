@@ -1,5 +1,6 @@
 #include "Tomasulo_module/arithmetic_logic_unit.h"
 
+#include <Tomasulo_module/load_store_buffer.h>
 #include <Tomasulo_module/reorder_buffer.h>
 
 namespace sjtu {
@@ -82,8 +83,17 @@ void ArithmeticLogicUnit::Run() {
     // send result to necessary modules
     rs_->broadcast_dest_ = dest_;
     rs_->broadcast_val_ = res;
-    rob_->broadcast_dest_ = dest_;
-    rob_->broadcast_val_ = res;
+    rob_->alu_broadcast_dest_ = dest_;
+    if (sel_ == Sb || sel_ == Sh || sel_ == Sw) {
+      rob_->alu_broadcast_address_ = res;
+      rob_->alu_broadcast_val_ = wireS_;
+    } else {
+      rob_->alu_broadcast_val_ = res;
+    }
+    if (sel_ == Lb || sel_ == Lbu || sel_ == Lh || sel_ == Lhu || sel_ == Lw) {
+      lsb_->alu_broadcast_dest_ = dest_;
+      lsb_->alu_broadcast_address_ = res;
+    }
   }
 
 }

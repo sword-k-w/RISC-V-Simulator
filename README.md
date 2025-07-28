@@ -23,10 +23,9 @@ public:
 } m1[2];
 
 class module2 {
-  friend module1;
+  friend class module1;
 } m2[2];
 
 m1[0].ptr = &m2[1];
-m1[1].ptr = &m2[0];
 
 ```

@@ -8,10 +8,19 @@
 namespace sjtu {
 
 void ReorderBuffer::Run() {
-  if (broadcast_dest_ != -1) {
-    entry_[broadcast_dest_].ready = true;
-    entry_[broadcast_dest_].value = broadcast_val_;
-    broadcast_dest_ = -1;
+  if (alu_broadcast_dest_ != -1) {
+    entry_[alu_broadcast_dest_].ready = true;
+    entry_[alu_broadcast_dest_].value = alu_broadcast_val_;
+    if (entry_[alu_broadcast_dest_].instruction.format_type == S) {
+      entry_[alu_broadcast_dest_].address = alu_broadcast_address_;
+    }
+    alu_broadcast_dest_ = -1;
+  }
+
+  if (lsb_broadcast_dest_ != -1) {
+    entry_[lsb_broadcast_dest_].ready = true;
+    entry_[lsb_broadcast_dest_].value = lsb_broadcast_val_;
+    lsb_broadcast_dest_ = -1;
   }
 
   if (head_ < tail_ && entry_[head_].ready) {
@@ -21,7 +30,6 @@ void ReorderBuffer::Run() {
       exit(0);
     }
     if (entry_[head_].instruction.format_type == B) {
-      // TODO
       predictor_->Feedback(entry_[head_].value);
       if (entry_[head_].value != entry_[head_].instruction.predict) {
         rs_->predict_failed_ = true;
@@ -33,12 +41,14 @@ void ReorderBuffer::Run() {
         tail_ = 0;
         mem_->las_rob_head_ = 0;
         mem_->las_rob_tail_ = 0;
-        rs_->las_rob_head_ = 0;
+        lsb_->las_rob_tail_ = 0;
         rs_->las_rob_tail_ = 0;
         return;
       }
     } else if (entry_[head_].instruction.format_type == S) {
-      // TODO
+      lsb_->rob_broadcast_address_ = entry_[head_].address;
+      lsb_->rob_broadcast_value_ = entry_[head_].value;
+      lsb_->rob_broadcast_dest_ = head_;
     } else {
       rf_->whether_commit_ = true;
       rf_->commit_rob_id_ = head_;
@@ -57,7 +67,7 @@ void ReorderBuffer::Run() {
 
   mem_->las_rob_head_ = head_;
   mem_->las_rob_tail_ = tail_;
-  rs_->las_rob_head_ = head_;
+  lsb_->las_rob_tail_ = tail_;
   rs_->las_rob_tail_ = tail_;
 }
 

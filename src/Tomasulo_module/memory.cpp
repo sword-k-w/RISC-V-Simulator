@@ -60,7 +60,6 @@ void Memory::RunPC() {
     rf_->new_dependence_ = las_rob_tail_;
   }
   if (cur_instruction_.format_type == B) {
-    // TODO
     bool predict = predictor_->Predict();
     uint32_t tmp = pc_;
     if (predict) {
@@ -84,6 +83,47 @@ void Memory::RunPC() {
     if (cur_instruction_.format_type == U) {
       cur_instruction_.immediate += pc_;
     }
+  }
+}
+
+void Memory::RunMemory() {
+  if (whether_commit_) {
+    if (commit_type_ == Sb || commit_type_ == Sh || commit_type_ == Sw) {
+      switch (commit_type_) {
+        case Sw:
+          memory_[commit_address_ + 2] = commit_value_ >> 16 & 255;
+          memory_[commit_address_ + 3] = commit_value_ >> 24 & 255;
+        case Sh:
+          memory_[commit_address_ + 1] = commit_value_ >> 8 & 255;
+        case Sb:
+          memory_[commit_address_] = commit_value_ & 255;
+        default:
+          assert(0);
+      }
+    } else {
+      rob_->lsb_broadcast_dest_ = commit_dest_;
+      switch (commit_type_) {
+        case Lw:
+          rob_->lsb_broadcast_val_ = (memory_[commit_address_] | (memory_[commit_address_ + 1] << 8)
+            | (memory_[commit_address_ + 2] << 16) | (memory_[commit_address_ + 3] << 24));
+          break;
+        case Lhu:
+          rob_->lsb_broadcast_val_ = memory_[commit_address_] | (memory_[commit_address_ + 1] << 8);
+          break;
+        case Lh:
+          rob_->lsb_broadcast_val_ = static_cast<int>(memory_[commit_address_] | (memory_[commit_address_ + 1] << 8));
+          break;
+        case Lbu:
+          rob_->lsb_broadcast_val_ = memory_[commit_address_];
+          break;
+        case Lb:
+          rob_->lsb_broadcast_val_ = static_cast<int>(memory_[commit_address_]);
+          break;
+        default:
+          assert(0);
+      }
+    }
+    whether_commit_ = false;
   }
 }
 

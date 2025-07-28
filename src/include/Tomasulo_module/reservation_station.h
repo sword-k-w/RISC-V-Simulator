@@ -15,6 +15,7 @@ struct ReservationStationEntry {
   int32_t depend1{-1};
   int32_t depend2{-1};
   uint32_t dest;
+  int32_t immediate_S;
 };
 
 class ReservationStation {
@@ -25,7 +26,6 @@ class ReservationStation {
 private:
   bool predict_failed_ = false;
 
-  uint32_t las_rob_head_;
   uint32_t las_rob_tail_;
   bool whether_new_instruction_ = false;
   Instruction new_instruction_;

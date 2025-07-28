@@ -10,7 +10,9 @@ void ReservationStation::Run() {
       entry_[i].busy = false;
     }
     predict_failed_ = false;
+    return;
   }
+
   if (broadcast_dest_ != -1) {
     for (int i = 0; i < 32; ++i) {
       if (entry_[i].depend1 == broadcast_dest_) {
@@ -37,7 +39,21 @@ void ReservationStation::Run() {
     entry_[index].busy = true;
     entry_[index].type = new_instruction_.type;
     entry_[index].dest = las_rob_tail_;
-    if (new_instruction_.format_type != R && new_instruction_.format_type != B) {
+    if (new_instruction_.format_type == S) {
+      entry_[index].immediate_S = new_instruction_.immediate;
+      if (old_rf_->dependence_[new_instruction_.rs1] == -1) {
+        entry_[index].depend1 = -1;
+        entry_[index].val1 = old_rf_->reg_[new_instruction_.rs1];
+      } else {
+        entry_[index].depend1 = old_rf_->dependence_[new_instruction_.rs1];
+      }
+      if (old_rf_->dependence_[new_instruction_.rs2] == -1) {
+        entry_[index].depend2 = -1;
+        entry_[index].val2 = old_rf_->reg_[new_instruction_.rs2];
+      } else {
+        entry_[index].depend2 = old_rf_->dependence_[new_instruction_.rs2];
+      }
+    } else if (new_instruction_.format_type != R && new_instruction_.format_type != B) {
       entry_[index].depend2 = -1;
       entry_[index].val2 = new_instruction_.immediate;
       if (new_instruction_.format_type == U) {
@@ -70,8 +86,13 @@ void ReservationStation::Run() {
   for (int i = 0; i < 32; ++i) {
     if (entry_[i].busy && entry_[i].depend1 == -1 && entry_[i].depend2 == -1) {
       entry_[i].busy = false;
+      if (entry_[i].type == Sb || entry_[i].type == Sh || entry_[i].type == Sw) {
+        alu_->wireB_ = entry_[i].immediate_S;
+        alu_->wireS_ = entry_[i].val2;
+      } else {
+        alu_->wireB_ = entry_[i].val2;
+      }
       alu_->wireA_ = entry_[i].val1;
-      alu_->wireB_ = entry_[i].val2;
       alu_->sel_ = entry_[i].type;
       alu_->dest_ = entry_[i].dest;
       flag = false;

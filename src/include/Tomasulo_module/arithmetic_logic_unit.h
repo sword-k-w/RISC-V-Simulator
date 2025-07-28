@@ -14,6 +14,7 @@ private:
   int dest_ = -1;
   uint32_t wireA_;
   uint32_t wireB_;
+  uint32_t wireS_;
   InstructionType sel_;
 
 public:

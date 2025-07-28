@@ -11,12 +11,23 @@ namespace sjtu {
 
 class Memory {
   friend class ReorderBuffer;
+  friend class LoadStoreBuffer;
 private:
   bool predict_failed_ = false;
   uint32_t new_pc_;
 
+  InstructionType new_type_;
+  uint32_t new_address_;
+  uint32_t new_value_;
+
   uint32_t las_rob_head_;
   uint32_t las_rob_tail_;
+
+  bool whether_commit_ = false;
+  InstructionType commit_type_;
+  uint32_t commit_address_;
+  uint32_t commit_value_;
+  uint32_t commit_dest_;
 
   InstructionParser instruction_parser_;
   uint32_t pc_ = 0;
@@ -27,6 +38,7 @@ public:
   ReorderBuffer *rob_;
   ReservationStation *rs_;
   RegisterFile *rf_;
+  LoadStoreBuffer *lsb_;
   Predictor *predictor_;
   Memory();
   void Init();
