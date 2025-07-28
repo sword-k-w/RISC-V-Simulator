@@ -28,6 +28,7 @@ private:
   RoBEntry entry_[32];
   Memory *mem_;
   ReservationStation *rs_;
+  RegisterFile *rf_;
 public:
   void Run();
   void Copy(const ReorderBuffer &);

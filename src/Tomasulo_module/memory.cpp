@@ -47,7 +47,7 @@ void Memory::RunPC() {
     rf_->whether_dependence_ = false;
   } else {
     rf_->whether_dependence_ = true;
-    rf_->new_reg_id = cur_instruction_.rd;
+    rf_->new_reg_id_ = cur_instruction_.rd;
     rf_->new_dependence_ = las_rob_tail_;
   }
   if (cur_instruction_.format_type == B) {

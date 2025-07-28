@@ -25,6 +25,7 @@ struct Instruction {
   uint32_t rs1;
   uint32_t rs2;
   int immediate;
+  bool predict;
   void Print() const;
   void ExtendSign(int bit);
 };

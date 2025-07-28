@@ -8,9 +8,16 @@ RegisterFile::RegisterFile() {
 }
 
 void RegisterFile::Run() {
-
+  if (whether_commit_) {
+    if (dependence_[commit_reg_id_] == commit_rob_id_) {
+      dependence_[commit_reg_id_] = -1;
+      reg_[commit_reg_id_] = commit_value_;
+    }
+    whether_commit_ = false;
+  }
   if (whether_dependence_) {
-    dependence_[new_reg_id] = new_dependence_;
+    dependence_[new_reg_id_] = new_dependence_;
+    whether_dependence_ = false;
   }
 }
 

@@ -9,10 +9,16 @@ namespace sjtu {
 class RegisterFile {
   friend class ReservationStation;
   friend class Memory;
+  friend class ReorderBuffer;
 private:
   bool whether_dependence_ = false;
-  uint32_t new_reg_id;
+  uint32_t new_reg_id_;
   int32_t new_dependence_;
+
+  bool whether_commit_ = false;
+  uint32_t commit_rob_id_;
+  uint32_t commit_reg_id_;
+  uint32_t commit_value_;
 
   uint32_t reg_[32];
   int32_t dependence_[32]; // -1 means no dependence
