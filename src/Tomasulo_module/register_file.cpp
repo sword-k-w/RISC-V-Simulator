@@ -18,19 +18,17 @@ void RegisterFile::Run() {
     memcpy(rs_->old_reg_, reg_, sizeof(reg_));
     return;
   }
-  if (whether_commit_) {
-    if (dependence_[commit_reg_id_] == commit_rob_id_ && commit_reg_id_) {
-      dependence_[commit_reg_id_] = -1;
-      reg_[commit_reg_id_] = commit_value_;
-    }
+  if (whether_commit_ && commit_reg_id_) {
+    dependence_[commit_reg_id_] = -1;
+    reg_[commit_reg_id_] = commit_value_;
   }
   if (whether_dependence_ && new_reg_id_) {
     dependence_[new_reg_id_] = new_dependence_;
   }
   memcpy(rs_->old_dependence_, dependence_, sizeof(dependence_));
   memcpy(rs_->old_reg_, reg_, sizeof(reg_));
-  // for (int i = 11; i < 12; ++i) {
-  //   std::cout << "[x" << i << " : " << reg_[i] << " " << dependence_[i] << " x" << i + 1 << " : " << reg_[i + 1] << " " << dependence_[i + 1] << "]";
+  // for (int i = 9; i < 12; ++i) {
+  //   std::cerr << "[x" << i << " : " << reg_[i] << " " << dependence_[i] << "]";
   // }
 }
 

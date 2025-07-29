@@ -5,8 +5,11 @@ namespace sjtu {
 Interpreter::Interpreter() : pc_(0u) {}
 
 void Interpreter::Run() {
+  int cnt = 0;
   while (true) {
     // PC
+    ++cnt;
+    std::cerr << cnt << " ";
     MEM_.SetPC(pc_);
     selectorA_.SetWire1(pc_);
     selectorPC_.SetWire0(pc_ + 4);
@@ -172,9 +175,9 @@ void Interpreter::Run() {
     }
     selectorPC_.SetSel(PCsel);
     pc_ = selectorPC_.Result();
-    // if (pc_ == 4372) {
-    //   RegFile_.Print();
-    // }
+    if (pc_ == 5680) {
+      RegFile_.Print();
+    }
   }
 }
 

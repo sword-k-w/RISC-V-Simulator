@@ -410,9 +410,9 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       assert(0);
   }
   // if (debug_mode_) {
-  //   std::cout << address << ": ";
-  //   res.Print(std::cout);
-  //   std::cout << '\n';
+  //   std::cerr << address << ": ";
+  //   res.Print(std::cerr);
+  //   std::cerr << '\n';
   // }
   return res;
 }

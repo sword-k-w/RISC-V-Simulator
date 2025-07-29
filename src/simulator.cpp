@@ -25,11 +25,11 @@ void Simulator::Init() {
 
 void Simulator::Run() {
   ++clock_;
-  std::cerr << "[" << clock_ << "]\n";
-  if (clock_ == 100000) {
-    std::cout << "time is up!\n";
-    exit(0);
-  }
+  // std::cout << "[" << clock_ << "]\n";
+  // if (clock_ == 100000) {
+  //   std::cout << "time is up!\n";
+  //   exit(0);
+  // }
   alu_[0].Run();
   lsb_[0].Run();
   mem_[0].RunPC();
@@ -47,7 +47,6 @@ void Simulator::Run() {
   rob_[0].Copy(rob_[1]);
   rs_[0].Copy(rs_[1]);
   rf_[0].Copy(rf_[1]);
-  std::cerr << '\n';
 }
 
 }
