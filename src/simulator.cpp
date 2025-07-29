@@ -26,10 +26,10 @@ void Simulator::Init() {
 void Simulator::Run() {
   ++clock_;
   // std::cout << "[" << clock_ << "]\n";
-  // if (clock_ == 100000) {
-  //   std::cout << "time is up!\n";
-  //   exit(0);
-  // }
+  if (clock_ == 1000000) {
+    std::cout << "time is up!\n";
+    exit(0);
+  }
   alu_[0].Run();
   lsb_[0].Run();
   mem_[0].RunPC();

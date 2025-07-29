@@ -12,7 +12,6 @@ void LoadStoreBuffer::Run() {
       tail_ = nxt;
       nxt = (tail_ + 31) % 32;
     }
-    std::cout << head_ << " " << tail_ << '\n';
     waiting_cycle_ = -1;
     mem_->las_lsb_head_ = head_;
     mem_->las_lsb_tail_ = tail_;
