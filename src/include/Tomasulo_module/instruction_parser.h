@@ -26,7 +26,7 @@ struct Instruction {
   uint32_t rs2;
   int immediate;
   bool predict;
-  void Print() const;
+  void Print(std::ostream &) const;
   void ExtendSign(int bit);
 };
 

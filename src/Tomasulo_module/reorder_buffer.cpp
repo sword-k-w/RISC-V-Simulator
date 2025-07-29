@@ -8,6 +8,7 @@
 namespace sjtu {
 
 bool ReorderBuffer::Run() {
+  other_->predict_failed = false;
   mem_->thaw_ = false;
   rs_->predict_failed_ = false;
   rf_->predict_failed_ = false;
@@ -16,6 +17,19 @@ bool ReorderBuffer::Run() {
   rf_->whether_commit_ = false;
   lsb_->rob_broadcast_dest_ = -1;
   rf_->commit_rob_id_ = -1;
+
+  if (predict_failed) {
+    head_ = 0;
+    tail_ = 0;
+    mem_->las_rob_head_ = 0;
+    mem_->las_rob_tail_ = 0;
+    lsb_->las_rob_tail_ = 0;
+    rs_->las_rob_tail_ = 0;
+    rs_->las_rob_haed_ = 0;
+    rf_->new_dependence_ = 0;
+    memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
+    return false;
+  }
 
   if (alu_broadcast_dest_ != -1) {
     entry_[alu_broadcast_dest_].ready = true;
@@ -31,7 +45,7 @@ bool ReorderBuffer::Run() {
   }
   if (head_ != tail_ && entry_[head_].ready) {
     std::cerr << "@commit ";
-    entry_[head_].instruction.Print();
+    entry_[head_].instruction.Print(std::cerr);
     std::cerr << '\n';
     if (entry_[head_].instruction.type == Addi && entry_[head_].instruction.rd == 10
       && entry_[head_].instruction.immediate == 255 && entry_[head_].instruction.rs1 == 0) {
@@ -51,6 +65,7 @@ bool ReorderBuffer::Run() {
         rf_->predict_failed_ = true;
         lsb_->predict_failed_ = true;
         mem_->predict_failed_ = true;
+        other_->predict_failed = true;
         mem_->new_pc_ = entry_[head_].instruction.immediate;
         head_ = 0;
         tail_ = 0;
@@ -59,6 +74,8 @@ bool ReorderBuffer::Run() {
         lsb_->las_rob_tail_ = 0;
         rs_->las_rob_tail_ = 0;
         rs_->las_rob_haed_ = 0;
+        rf_->new_dependence_ = 0;
+        memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
         return false;
       }
     } else if (entry_[head_].instruction.format_type == S) {
@@ -75,9 +92,6 @@ bool ReorderBuffer::Run() {
   }
 
   if (whether_new_instruction_) {
-    std::cerr << "|" << tail_ << "|";
-    new_instruction_.Print();
-    std::cerr << '\n';
     entry_[tail_].instruction = new_instruction_;
     entry_[tail_].ready = false;
     tail_ = (tail_ + 1) % 32;
@@ -94,6 +108,7 @@ bool ReorderBuffer::Run() {
 }
 
 void ReorderBuffer::Copy(const ReorderBuffer &other) {
+  predict_failed = other.predict_failed;
   whether_new_instruction_ = other.whether_new_instruction_;
   new_instruction_ = other.new_instruction_;
   alu_broadcast_dest_ = other.alu_broadcast_dest_;

@@ -4,170 +4,170 @@
 
 namespace sjtu {
 
-void Instruction::Print() const {
+void Instruction::Print(std::ostream &os) const {
   switch (format_type) {
     case R:
-      std::cerr << "(R) ";
+      os << "(R) ";
       switch (type) {
         case Add:
-          std::cerr << "add";
+          os << "add";
           break;
         case Sub:
-          std::cerr << "sub";
+          os << "sub";
           break;
         case And:
-          std::cerr << "and";
+          os << "and";
           break;
         case Or:
-          std::cerr << "or";
+          os << "or";
           break;
         case Xor:
-          std::cerr << "xor";
+          os << "xor";
           break;
         case Sll:
-          std::cerr << "sll";
+          os << "sll";
           break;
         case Srl:
-          std::cerr << "srl";
+          os << "srl";
           break;
         case Sra:
-          std::cerr << "sra";
+          os << "sra";
           break;
         case Slt:
-          std::cerr << "slt";
+          os << "slt";
           break;
         case Sltu:
-          std::cerr << "sltu";
+          os << "sltu";
           break;
         default:
           assert(0);
       }
-      std::cerr << " x" << rd << " x" << rs1 << " x" << rs2;
+      os << " x" << rd << " x" << rs1 << " x" << rs2;
       break;
     case IA:
-      std::cerr << "(I) ";
+      os << "(I) ";
       switch (type) {
         case Addi:
-          std::cerr << "addi";
+          os << "addi";
           break;
         case Andi:
-          std::cerr << "andi";
+          os << "andi";
           break;
         case Ori:
-          std::cerr << "ori";
+          os << "ori";
           break;
         case Xori:
-          std::cerr << "xori";
+          os << "xori";
           break;
         case Slti:
-          std::cerr << "slti";
+          os << "slti";
           break;
         case Sltiu:
-          std::cerr << "sltiu";
+          os << "sltiu";
           break;
         default:
           assert(0);
       }
-      std::cerr << " x" << rd << " x" << rs1 << " " << immediate;
+      os << " x" << rd << " x" << rs1 << " " << immediate;
       break;
     case Istar:
-      std::cerr << "(I*) ";
+      os << "(I*) ";
       switch (type) {
         case Slli:
-          std::cerr << "slli";
+          os << "slli";
           break;
         case Srli:
-          std::cerr << "srli";
+          os << "srli";
           break;
         case Srai:
-          std::cerr << "srai";
+          os << "srai";
           break;
         default:
           assert(0);
       }
-      std::cerr << " x" << rd << " x" << rs1 << " " << immediate;
+      os << " x" << rd << " x" << rs1 << " " << immediate;
       break;
     case IM:
-      std::cerr << "(I) ";
+      os << "(I) ";
       switch (type) {
         case Lb:
-          std::cerr << "lb";
+          os << "lb";
           break;
         case Lbu:
-          std::cerr << "lbu";
+          os << "lbu";
           break;
         case Lh:
-          std::cerr << "lh";
+          os << "lh";
           break;
         case Lhu:
-          std::cerr << "lhu";
+          os << "lhu";
           break;
         case Lw:
-          std::cerr << "lw";
+          os << "lw";
           break;
         default:
           assert(0);
       }
-      std::cerr << " x" << rd << " " << immediate << "(x" << rs1 << ")";
+      os << " x" << rd << " " << immediate << "(x" << rs1 << ")";
       break;
     case IC:
-      std::cerr << "(I) jalr x" << rd << " x" << rs1 << " " << immediate;
+      os << "(I) jalr x" << rd << " x" << rs1 << " " << immediate;
       break;
     case S:
-      std::cerr << "(S) ";
+      os << "(S) ";
       switch (type) {
         case Sb:
-          std::cerr << "sb";
+          os << "sb";
           break;
         case Sh:
-          std::cerr << "sh";
+          os << "sh";
           break;
         case Sw:
-          std::cerr << "sw";
+          os << "sw";
           break;
         default:
           assert(0);
       }
-      std::cerr << " x" << rs2 << " " << immediate << "(x" << rs1 << ")";
+      os << " x" << rs2 << " " << immediate << "(x" << rs1 << ")";
       break;
     case B:
-      std::cerr << "(B) ";
+      os << "(B) ";
       switch (type) {
         case Beq:
-          std::cerr << "beq";
+          os << "beq";
           break;
         case Bge:
-          std::cerr << "bge";
+          os << "bge";
           break;
         case Bgeu:
-          std::cerr << "bgeu";
+          os << "bgeu";
           break;
         case Blt:
-          std::cerr << "blt";
+          os << "blt";
           break;
         case Bltu:
-          std::cerr << "bltu";
+          os << "bltu";
           break;
         case Bne:
-          std::cerr << "bne";
+          os << "bne";
           break;
         default:
           assert(0);
       }
-      std::cerr << " x" << rs1 << " x" << rs2 << " " << immediate;
+      os << " x" << rs1 << " x" << rs2 << " " << immediate;
       break;
     case U:
-      std::cerr << "(U) ";
+      os << "(U) ";
       if (type == Auipc) {
-        std::cerr << "auipc";
+        os << "auipc";
       } else {
         assert(type == Lui);
-        std::cerr << "lui";
+        os << "lui";
       }
-      std::cerr << " x" << rd << " " << immediate;
+      os << " x" << rd << " " << immediate;
       break;
     case J:
-      std::cerr << "(J) jal x" << rd << " " << immediate;
+      os << "(J) jal x" << rd << " " << immediate;
       break;
     default:
       assert(0);
@@ -184,7 +184,7 @@ void Instruction::ExtendSign(int bit) {
 
 
 InstructionParser::InstructionParser() {
-#ifdef DEBUG
+#ifdef LOCAL
   debug_mode_ = true;
 #else
   debug_mode_ = false;
@@ -409,11 +409,11 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
     default:
       assert(0);
   }
-  if (debug_mode_) {
-    std::cerr << address << ": ";
-    res.Print();
-    std::cerr << '\n';
-  }
+  // if (debug_mode_) {
+  //   std::cout << address << ": ";
+  //   res.Print(std::cout);
+  //   std::cout << '\n';
+  // }
   return res;
 }
 

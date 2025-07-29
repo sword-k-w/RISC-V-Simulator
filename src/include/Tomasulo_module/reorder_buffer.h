@@ -19,6 +19,8 @@ class ReorderBuffer {
   friend class Memory;
   friend class ArithmeticLogicUnit;
 private:
+  bool predict_failed = false;
+
   bool whether_new_instruction_ = false;
   Instruction new_instruction_;
 
@@ -38,6 +40,7 @@ public:
   RegisterFile *rf_;
   LoadStoreBuffer *lsb_;
   Predictor *predictor_;
+  ReorderBuffer *other_;
   bool Run();
   void Copy(const ReorderBuffer &);
 };

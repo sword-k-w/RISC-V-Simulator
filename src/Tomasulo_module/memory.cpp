@@ -48,6 +48,7 @@ void Memory::RunPC() {
   if (predict_failed_) {
     pc_ = new_pc_;
     jalr_frozen_ = false;
+    las_rob_tail_ = las_rob_head_ = 0;
   }
 
   if ((las_rob_tail_ + 1) % 32 == las_rob_head_ || jalr_frozen_) {

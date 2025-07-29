@@ -172,7 +172,9 @@ void Interpreter::Run() {
     }
     selectorPC_.SetSel(PCsel);
     pc_ = selectorPC_.Result();
-    // RegFile_.Print();
+    // if (pc_ == 4372) {
+    //   RegFile_.Print();
+    // }
   }
 }
 

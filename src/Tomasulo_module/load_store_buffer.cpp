@@ -7,16 +7,16 @@ namespace sjtu {
 void LoadStoreBuffer::Run() {
   mem_->whether_commit_ = false;
   if (predict_failed_) {
-    while (head_ != tail_ && (!entry[tail_ - 1].ready || entry[tail_ - 1].instruction.format_type == IM)) {
-      tail_ = (tail_ + 31) % 32;
+    uint32_t nxt = (tail_ + 31) % 32;
+    while (head_ != tail_ && (!entry[nxt].ready || entry[nxt].instruction.format_type == IM)) {
+      tail_ = nxt;
+      nxt = (tail_ + 31) % 32;
     }
-    head_ = 0;
-    tail_ = 0;
     waiting_cycle_ = -1;
     return;
   }
   if (alu_broadcast_dest_ != -1) {
-    for (int i = head_; i < tail_; ++i) {
+    for (int i = head_; i != tail_; i = (i + 1) % 32) {
       if (entry[i].dest == alu_broadcast_dest_) {
         assert(entry[i].instruction.format_type == IM);
         entry[i].ready = true;
@@ -27,7 +27,7 @@ void LoadStoreBuffer::Run() {
   }
 
   if (rob_broadcast_dest_ != -1) {
-    for (int i = head_; i < tail_; ++i) {
+    for (int i = head_; i != tail_; i = (i + 1) % 32) {
       if (entry[i].dest == rob_broadcast_dest_) {
         assert(entry[i].instruction.format_type == S);
         entry[i].ready = true;

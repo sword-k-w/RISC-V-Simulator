@@ -9,6 +9,7 @@ void ReservationStation::Run() {
   if (predict_failed_) {
     for (int i = 0; i < 32; ++i) {
       entry_[i].busy = false;
+      old_dependence_[i] = -1;
     }
     return;
   }
@@ -24,9 +25,6 @@ void ReservationStation::Run() {
     if (index == 32) {
       assert(0);
     }
-    std::cerr << "@issue ";
-    new_instruction_.Print();
-    std::cerr << " <with index = " << index << ">\n";
     entry_[index].busy = true;
     entry_[index].type = new_instruction_.type;
     entry_[index].dest = las_rob_tail_;
@@ -100,13 +98,9 @@ void ReservationStation::Run() {
         entry_[index].depend2 = old_dependence_[new_instruction_.rs2];
       }
     }
-
-    std::cerr << index << " " << entry_[index].depend1 << " " << entry_[index].val1 << " " << entry_[index].depend2 << " " << entry_[index].val2 << '\n';
-
   }
 
   if (alu_broadcast_dest_ != -1) {
-    std::cerr << "@rs_broadcast(alu) " << alu_broadcast_dest_ << " " << alu_broadcast_val_ << '\n';
     for (int i = 0; i < 32; ++i) {
       if (entry_[i].depend1 == alu_broadcast_dest_) {
         entry_[i].depend1 = -1;
@@ -120,7 +114,6 @@ void ReservationStation::Run() {
   }
 
   if (lsb_broadcast_dest_ != -1) {
-    std::cerr << "@rs_broadcast(lsb) " << lsb_broadcast_dest_ << " " << lsb_broadcast_val_ << '\n';
     for (int i = 0; i < 32; ++i) {
       if (entry_[i].depend1 == lsb_broadcast_dest_) {
         entry_[i].depend1 = -1;
@@ -132,6 +125,14 @@ void ReservationStation::Run() {
       }
     }
   }
+
+  // std::cout <<"$RS$\n";
+  // for (int i = 0; i < 32; ++i) {
+  //   if (entry_[i].busy) {
+  //     std::cout << entry_[i].type << " " << entry_[i].depend1 << " " << entry_[i].val1 << " " << entry_[i].depend2 << " " << entry_[i].val2 << " " << entry_[i].dest << '\n';
+  //   }
+  // }
+  // std::cout << '\n';
 
   for (int i = 0; i < 32; ++i) {
     if (entry_[i].busy && entry_[i].depend1 == -1 && entry_[i].depend2 == -1) {
