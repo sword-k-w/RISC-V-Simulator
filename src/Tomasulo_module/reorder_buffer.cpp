@@ -75,6 +75,9 @@ void ReorderBuffer::Run() {
   }
 
   if (whether_new_instruction_) {
+    std::cerr << "|" << tail_ << "|";
+    new_instruction_.Print();
+    std::cerr << '\n';
     entry_[tail_].instruction = new_instruction_;
     entry_[tail_].ready = false;
     tail_ = (tail_ + 1) % 32;
@@ -84,6 +87,7 @@ void ReorderBuffer::Run() {
   mem_->las_rob_tail_ = tail_;
   lsb_->las_rob_tail_ = tail_;
   rs_->las_rob_tail_ = tail_;
+  rf_->new_dependence_ = tail_;
 }
 
 void ReorderBuffer::Copy(const ReorderBuffer &other) {

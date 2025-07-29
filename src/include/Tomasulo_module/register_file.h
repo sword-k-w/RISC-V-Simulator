@@ -7,7 +7,6 @@
 namespace sjtu {
 
 class RegisterFile {
-  friend class ReservationStation;
   friend class Memory;
   friend class ReorderBuffer;
 private:

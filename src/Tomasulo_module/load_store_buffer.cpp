@@ -15,7 +15,6 @@ void LoadStoreBuffer::Run() {
     waiting_cycle_ = -1;
     return;
   }
-
   if (alu_broadcast_dest_ != -1) {
     for (int i = head_; i < tail_; ++i) {
       if (entry[i].dest == alu_broadcast_dest_) {

@@ -59,7 +59,6 @@ void Memory::Init() {
   if (cur_instruction.format_type != S && cur_instruction.format_type != B) {
     rf_->whether_dependence_ = true;
     rf_->new_reg_id_ = cur_instruction.rd;
-    rf_->new_dependence_ = las_rob_tail_;
   }
   if (cur_instruction.format_type == B) {
     bool predict = predictor_->Predict();
