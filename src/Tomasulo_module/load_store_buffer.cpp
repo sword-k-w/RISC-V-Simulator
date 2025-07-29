@@ -42,13 +42,14 @@ void LoadStoreBuffer::Run() {
     entry[tail_].instruction = new_instruction_;
     entry[tail_].ready = false;
     entry[tail_].dest = las_rob_tail_;
+    tail_ = (tail_ + 1) % 32;
   }
 
   if (waiting_cycle_ > 0) {
     --waiting_cycle_;
-    assert(head_ < tail_ && entry[head_].ready);
+    assert(head_ != tail_ && entry[head_].ready);
   } else if (waiting_cycle_ == 0) {
-    assert(head_ < tail_ && entry[head_].ready);
+    assert(head_ != tail_ && entry[head_].ready);
     mem_->whether_commit_ = true;
     mem_->commit_type_ = entry[head_].instruction.type;
     mem_->commit_address_ = entry[head_].address;
@@ -58,7 +59,8 @@ void LoadStoreBuffer::Run() {
       mem_->commit_dest_ = entry[head_].dest;
     }
     waiting_cycle_ = -1;
-  } else if (head_ < tail_) {
+    head_ = (head_ + 1) % 32;
+  } else if (head_ != tail_) {
     assert(waiting_cycle_ == -1);
     if (entry[head_].ready) {
       waiting_cycle_ = 2;

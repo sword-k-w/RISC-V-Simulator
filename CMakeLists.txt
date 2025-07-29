@@ -5,19 +5,19 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(src/include)
 
-add_definitions(-DDEBUG)
+add_definitions(-DLOCAL)
 
-#add_executable(code
-#    src/pipeline_module/selector.cpp
-#    src/pipeline_module/arithmetic_logic_unit.cpp
-#    src/pipeline_module/memory.cpp
-#    src/pipeline_module/register_file.cpp
-#    src/pipeline_module/instruction_parser.cpp
-#    src/pipeline_module/branch_comparator.cpp
-#    src/pipeline_module/immediate_generator.cpp
-#    src/interpreter.cpp
-#    src/naive_main.cpp
-#)
+add_executable(naive_code
+    src/pipeline_module/selector.cpp
+    src/pipeline_module/arithmetic_logic_unit.cpp
+    src/pipeline_module/memory.cpp
+    src/pipeline_module/register_file.cpp
+    src/pipeline_module/instruction_parser.cpp
+    src/pipeline_module/branch_comparator.cpp
+    src/pipeline_module/immediate_generator.cpp
+    src/interpreter.cpp
+    src/naive_main.cpp
+)
 
 add_executable(code
         src/Tomasulo_module/arithmetic_logic_unit.cpp

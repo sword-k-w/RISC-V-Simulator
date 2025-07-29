@@ -28,6 +28,7 @@ public:
   RegisterFile();
   void Run();
   void Copy(const RegisterFile &);
+  uint32_t Result() const;
 };
 
 }

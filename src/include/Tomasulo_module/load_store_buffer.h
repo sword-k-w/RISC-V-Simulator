@@ -19,6 +19,7 @@ struct LoadStoreBufferEntry {
 class LoadStoreBuffer {
   friend class ArithmeticLogicUnit;
   friend class ReorderBuffer;
+  friend class Memory;
 private:
   bool predict_failed_ = false;
 

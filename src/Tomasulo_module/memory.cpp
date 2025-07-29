@@ -1,6 +1,7 @@
 #include "Tomasulo_module/memory.h"
 #include <string>
 #include <iostream>
+#include <Tomasulo_module/load_store_buffer.h>
 #include <Tomasulo_module/register_file.h>
 #include <Tomasulo_module/reorder_buffer.h>
 #include <Tomasulo_module/reservation_station.h>
@@ -33,10 +34,11 @@ void Memory::Init() {
 }
 
 
-  void Memory::RunPC() {
+void Memory::RunPC() {
   rob_->whether_new_instruction_ = false;
   rs_->whether_new_instruction_ = false;
   rf_->whether_dependence_ = false;
+  lsb_->whether_new_instruction_ = false;
 
   if (thaw_) {
     assert(!predict_failed_);
@@ -54,8 +56,6 @@ void Memory::Init() {
 
   Instruction cur_instruction = instruction_parser_.Decode(pc_, GetInstruction());
 
-  rob_->whether_new_instruction_ = true;
-  rs_->whether_new_instruction_ = true;
   if (cur_instruction.format_type != S && cur_instruction.format_type != B) {
     rf_->whether_dependence_ = true;
     rf_->new_reg_id_ = cur_instruction.rd;
@@ -73,23 +73,31 @@ void Memory::Init() {
     cur_instruction.predict = predict;
     cur_instruction.immediate = tmp;
   } else if (cur_instruction.format_type == J) {
+    uint32_t tmp = pc_;
     pc_ += cur_instruction.immediate;
-    cur_instruction.immediate = pc_ + 4;
+    cur_instruction.immediate = tmp + 4;
   } else if (cur_instruction.format_type == IC) {
-    cur_instruction.immediate = pc_ + 4;
+    cur_instruction.rs2 = pc_ + 4;
     jalr_frozen_ = true;
   } else {
-    pc_ += 4;
     if (cur_instruction.type == Auipc) {
       cur_instruction.immediate += pc_;
     }
+    pc_ += 4;
   }
+  rob_->whether_new_instruction_ = true;
   rob_->new_instruction_ = cur_instruction;
+  rs_->whether_new_instruction_ = true;
   rs_->new_instruction_ = cur_instruction;
+  if (cur_instruction.format_type == IM || cur_instruction.format_type == S) {
+    lsb_->whether_new_instruction_ = true;
+    lsb_->new_instruction_ = cur_instruction;
+  }
 }
 
 void Memory::RunMemory() {
   rob_->lsb_broadcast_dest_ = -1;
+  rs_->lsb_broadcast_dest_ = -1;
   if (whether_commit_) {
     if (commit_type_ == Sb || commit_type_ == Sh || commit_type_ == Sw) {
       switch (commit_type_) {
@@ -100,27 +108,26 @@ void Memory::RunMemory() {
           memory_[commit_address_ + 1] = commit_value_ >> 8 & 255;
         case Sb:
           memory_[commit_address_] = commit_value_ & 255;
-        default:
-          assert(0);
       }
     } else {
+      rs_->lsb_broadcast_dest_ = commit_dest_;
       rob_->lsb_broadcast_dest_ = commit_dest_;
       switch (commit_type_) {
         case Lw:
-          rob_->lsb_broadcast_val_ = (memory_[commit_address_] | (memory_[commit_address_ + 1] << 8)
+          rs_-> lsb_broadcast_val_ = rob_->lsb_broadcast_val_ = (memory_[commit_address_] | (memory_[commit_address_ + 1] << 8)
             | (memory_[commit_address_ + 2] << 16) | (memory_[commit_address_ + 3] << 24));
           break;
         case Lhu:
-          rob_->lsb_broadcast_val_ = memory_[commit_address_] | (memory_[commit_address_ + 1] << 8);
+          rs_-> lsb_broadcast_val_ = rob_->lsb_broadcast_val_ = memory_[commit_address_] | (memory_[commit_address_ + 1] << 8);
           break;
         case Lh:
-          rob_->lsb_broadcast_val_ = static_cast<int>(memory_[commit_address_] | (memory_[commit_address_ + 1] << 8));
+          rs_-> lsb_broadcast_val_ = rob_->lsb_broadcast_val_ = static_cast<int>(memory_[commit_address_] | (memory_[commit_address_ + 1] << 8));
           break;
         case Lbu:
-          rob_->lsb_broadcast_val_ = memory_[commit_address_];
+          rs_-> lsb_broadcast_val_ = rob_->lsb_broadcast_val_ = memory_[commit_address_];
           break;
         case Lb:
-          rob_->lsb_broadcast_val_ = static_cast<int>(memory_[commit_address_]);
+          rs_-> lsb_broadcast_val_ = rob_->lsb_broadcast_val_ = static_cast<int>(memory_[commit_address_]);
           break;
         default:
           assert(0);

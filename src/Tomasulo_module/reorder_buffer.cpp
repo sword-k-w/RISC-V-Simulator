@@ -7,7 +7,7 @@
 
 namespace sjtu {
 
-void ReorderBuffer::Run() {
+bool ReorderBuffer::Run() {
   mem_->thaw_ = false;
   rs_->predict_failed_ = false;
   rf_->predict_failed_ = false;
@@ -16,12 +16,11 @@ void ReorderBuffer::Run() {
   rf_->whether_commit_ = false;
   lsb_->rob_broadcast_dest_ = -1;
   rf_->commit_rob_id_ = -1;
-  rs_->broadcast_dest_ = -1;
 
   if (alu_broadcast_dest_ != -1) {
     entry_[alu_broadcast_dest_].ready = true;
     entry_[alu_broadcast_dest_].value = alu_broadcast_val_;
-    if (entry_[alu_broadcast_dest_].instruction.format_type == S) {
+    if (entry_[alu_broadcast_dest_].instruction.format_type == S || entry_[alu_broadcast_dest_].instruction.format_type == IC) {
       entry_[alu_broadcast_dest_].address = alu_broadcast_address_;
     }
   }
@@ -30,19 +29,21 @@ void ReorderBuffer::Run() {
     entry_[lsb_broadcast_dest_].ready = true;
     entry_[lsb_broadcast_dest_].value = lsb_broadcast_val_;
   }
-
   if (head_ != tail_ && entry_[head_].ready) {
     std::cerr << "@commit ";
     entry_[head_].instruction.Print();
     std::cerr << '\n';
     if (entry_[head_].instruction.type == Addi && entry_[head_].instruction.rd == 10
       && entry_[head_].instruction.immediate == 255 && entry_[head_].instruction.rs1 == 0) {
-      std::cout << (rf_->reg_[10] & 255) << '\n';
-      exit(0);
+      return true;
     }
     if (entry_[head_].instruction.format_type == IC) {
       mem_->thaw_ = true;
-      mem_->new_pc_ = entry_[head_].value;
+      mem_->new_pc_ = entry_[head_].address;
+      rf_->whether_commit_ = true;
+      rf_->commit_rob_id_ = head_;
+      rf_->commit_reg_id_ = entry_[head_].instruction.rd;
+      rf_->commit_value_ = entry_[head_].value;
     } else if (entry_[head_].instruction.format_type == B) {
       predictor_->Feedback(entry_[head_].value);
       if (entry_[head_].value != entry_[head_].instruction.predict) {
@@ -57,7 +58,8 @@ void ReorderBuffer::Run() {
         mem_->las_rob_tail_ = 0;
         lsb_->las_rob_tail_ = 0;
         rs_->las_rob_tail_ = 0;
-        return;
+        rs_->las_rob_haed_ = 0;
+        return false;
       }
     } else if (entry_[head_].instruction.format_type == S) {
       lsb_->rob_broadcast_address_ = entry_[head_].address;
@@ -68,8 +70,6 @@ void ReorderBuffer::Run() {
       rf_->commit_rob_id_ = head_;
       rf_->commit_reg_id_ = entry_[head_].instruction.rd;
       rf_->commit_value_ = entry_[head_].value;
-      rs_->broadcast_dest_ = head_;
-      rs_->broadcast_val_ = entry_[head_].value;
     }
     head_ = (head_ + 1) % 32;
   }
@@ -86,8 +86,11 @@ void ReorderBuffer::Run() {
   mem_->las_rob_head_ = head_;
   mem_->las_rob_tail_ = tail_;
   lsb_->las_rob_tail_ = tail_;
+  rs_->las_rob_haed_ = head_;
   rs_->las_rob_tail_ = tail_;
+  memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
   rf_->new_dependence_ = tail_;
+  return false;
 }
 
 void ReorderBuffer::Copy(const ReorderBuffer &other) {

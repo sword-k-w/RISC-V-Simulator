@@ -179,7 +179,7 @@ void Instruction::ExtendSign(int bit) {
 
 
 InstructionParser::InstructionParser() {
-#ifdef DEBUG
+#ifdef LOCAL
   debug_mode_ = true;
 #else
   debug_mode_ = false;

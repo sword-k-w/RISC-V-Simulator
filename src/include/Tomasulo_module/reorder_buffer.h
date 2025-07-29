@@ -38,7 +38,7 @@ public:
   RegisterFile *rf_;
   LoadStoreBuffer *lsb_;
   Predictor *predictor_;
-  void Run();
+  bool Run();
   void Copy(const ReorderBuffer &);
 };
 

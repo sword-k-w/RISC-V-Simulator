@@ -37,6 +37,7 @@ private:
   std::unordered_map<uint32_t, uint32_t> memory_;
 
 public:
+  LoadStoreBuffer *lsb_;
   ReorderBuffer *rob_;
   ReservationStation *rs_;
   RegisterFile *rf_;

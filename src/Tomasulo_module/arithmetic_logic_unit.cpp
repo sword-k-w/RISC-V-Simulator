@@ -8,8 +8,8 @@ namespace sjtu {
 ArithmeticLogicUnit::ArithmeticLogicUnit() : wireA_(0u), wireB_(0u), sel_(And) {}
 
 void ArithmeticLogicUnit::Run() {
-  rs_->broadcast_dest_ = -1;
-  rob_->alu_broadcast_address_ = -1;
+  rs_->alu_broadcast_dest_ = -1;
+  rob_->alu_broadcast_dest_ = -1;
   lsb_->alu_broadcast_dest_ = -1;
   if (dest_ != -1) {
     uint32_t res;
@@ -82,19 +82,27 @@ void ArithmeticLogicUnit::Run() {
       default:
         assert(0);
     }
-    rs_->broadcast_dest_ = dest_;
-    rs_->broadcast_val_ = res;
-    rob_->alu_broadcast_dest_ = dest_;
-    if (sel_ == Sb || sel_ == Sh || sel_ == Sw) {
-      rob_->alu_broadcast_address_ = res;
-      rob_->alu_broadcast_val_ = wireS_;
-    } else {
-      rob_->alu_broadcast_val_ = res;
+    if (sel_ != Lb && sel_ != Lbu && sel_ != Lh && sel_ != Lhu && sel_ != Lw && sel_ != Sb && sel_ != Sh && sel_ != Sw) {
+      rs_->alu_broadcast_dest_ = dest_;
+      if (sel_ == Jalr) {
+        rs_->alu_broadcast_val_ = wireS_;
+      } else {
+        rs_->alu_broadcast_val_ = res;
+      }
     }
     if (sel_ == Lb || sel_ == Lbu || sel_ == Lh || sel_ == Lhu || sel_ == Lw) {
       lsb_->alu_broadcast_dest_ = dest_;
       lsb_->alu_broadcast_address_ = res;
+    } else {
+      rob_->alu_broadcast_dest_ = dest_;
+      if (sel_ == Sb || sel_ == Sh || sel_ == Sw || sel_ == Jalr) {
+        rob_->alu_broadcast_address_ = res;
+        rob_->alu_broadcast_val_ = wireS_;
+      } else {
+        rob_->alu_broadcast_val_ = res;
+      }
     }
+    dest_ = -1;
   }
 }
 

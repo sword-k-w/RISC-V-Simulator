@@ -30,7 +30,20 @@ void ReservationStation::Run() {
     entry_[index].busy = true;
     entry_[index].type = new_instruction_.type;
     entry_[index].dest = las_rob_tail_;
-    if (new_instruction_.format_type == J || new_instruction_.format_type == U) {
+    if (new_instruction_.format_type == IC) {
+      entry_[index].immediate_S = new_instruction_.rs2;
+      entry_[index].depend2 = -1;
+      entry_[index].val2 = new_instruction_.immediate;
+      if (old_dependence_[new_instruction_.rs1] == -1) {
+        entry_[index].depend1 = -1;
+        entry_[index].val1 = old_reg_[new_instruction_.rs1];
+      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs1]].ready) {
+        entry_[index].depend1 = -1;
+        entry_[index].val1 = old_rob_entry_[old_dependence_[new_instruction_.rs1]].value;
+      } else {
+        entry_[index].depend1 = old_dependence_[new_instruction_.rs1];
+      }
+    } else if (new_instruction_.format_type == J || new_instruction_.format_type == U) {
       entry_[index].depend1 = -1;
       entry_[index].depend2 = -1;
       entry_[index].val1 = new_instruction_.immediate;
@@ -40,12 +53,18 @@ void ReservationStation::Run() {
       if (old_dependence_[new_instruction_.rs1] == -1) {
         entry_[index].depend1 = -1;
         entry_[index].val1 = old_reg_[new_instruction_.rs1];
+      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs1]].ready) {
+        entry_[index].depend1 = -1;
+        entry_[index].val1 = old_rob_entry_[old_dependence_[new_instruction_.rs1]].value;
       } else {
         entry_[index].depend1 = old_dependence_[new_instruction_.rs1];
       }
       if (old_dependence_[new_instruction_.rs2] == -1) {
         entry_[index].depend2 = -1;
         entry_[index].val2 = old_reg_[new_instruction_.rs2];
+      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs2]].ready) {
+        entry_[index].depend2 = -1;
+        entry_[index].val2 = old_rob_entry_[old_dependence_[new_instruction_.rs2]].value;
       } else {
         entry_[index].depend2 = old_dependence_[new_instruction_.rs2];
       }
@@ -55,6 +74,9 @@ void ReservationStation::Run() {
       if (old_dependence_[new_instruction_.rs1] == -1) {
         entry_[index].depend1 = -1;
         entry_[index].val1 = old_reg_[new_instruction_.rs1];
+      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs1]].ready) {
+        entry_[index].depend1 = -1;
+        entry_[index].val1 = old_rob_entry_[old_dependence_[new_instruction_.rs1]].value;
       } else {
         entry_[index].depend1 = old_dependence_[new_instruction_.rs1];
       }
@@ -62,12 +84,18 @@ void ReservationStation::Run() {
       if (old_dependence_[new_instruction_.rs1] == -1) {
         entry_[index].depend1 = -1;
         entry_[index].val1 = old_reg_[new_instruction_.rs1];
+      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs1]].ready) {
+        entry_[index].depend1 = -1;
+        entry_[index].val1 = old_rob_entry_[old_dependence_[new_instruction_.rs1]].value;
       } else {
         entry_[index].depend1 = old_dependence_[new_instruction_.rs1];
       }
       if (old_dependence_[new_instruction_.rs2] == -1) {
         entry_[index].depend2 = -1;
         entry_[index].val2 = old_reg_[new_instruction_.rs2];
+      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs2]].ready) {
+        entry_[index].depend2 = -1;
+        entry_[index].val2 = old_rob_entry_[old_dependence_[new_instruction_.rs2]].value;
       } else {
         entry_[index].depend2 = old_dependence_[new_instruction_.rs2];
       }
@@ -77,16 +105,30 @@ void ReservationStation::Run() {
 
   }
 
-  if (broadcast_dest_ != -1) {
-    std::cerr << "@rs_broadcast " << broadcast_dest_ << " " << broadcast_val_ << '\n';
+  if (alu_broadcast_dest_ != -1) {
+    std::cerr << "@rs_broadcast(alu) " << alu_broadcast_dest_ << " " << alu_broadcast_val_ << '\n';
     for (int i = 0; i < 32; ++i) {
-      if (entry_[i].depend1 == broadcast_dest_) {
+      if (entry_[i].depend1 == alu_broadcast_dest_) {
         entry_[i].depend1 = -1;
-        entry_[i].val1 = broadcast_val_;
+        entry_[i].val1 = alu_broadcast_val_;
       }
-      if (entry_[i].depend2 == broadcast_dest_) {
+      if (entry_[i].depend2 == alu_broadcast_dest_) {
         entry_[i].depend2 = -1;
-        entry_[i].val2 = broadcast_val_;
+        entry_[i].val2 = alu_broadcast_val_;
+      }
+    }
+  }
+
+  if (lsb_broadcast_dest_ != -1) {
+    std::cerr << "@rs_broadcast(lsb) " << lsb_broadcast_dest_ << " " << lsb_broadcast_val_ << '\n';
+    for (int i = 0; i < 32; ++i) {
+      if (entry_[i].depend1 == lsb_broadcast_dest_) {
+        entry_[i].depend1 = -1;
+        entry_[i].val1 = lsb_broadcast_val_;
+      }
+      if (entry_[i].depend2 == lsb_broadcast_dest_) {
+        entry_[i].depend2 = -1;
+        entry_[i].val2 = lsb_broadcast_val_;
       }
     }
   }
@@ -99,6 +141,9 @@ void ReservationStation::Run() {
         alu_->wireS_ = entry_[i].val2;
       } else {
         alu_->wireB_ = entry_[i].val2;
+        if (entry_[i].type == Jalr) {
+          alu_->wireS_ = entry_[i].immediate_S;
+        }
       }
       alu_->wireA_ = entry_[i].val1;
       alu_->sel_ = entry_[i].type;
@@ -113,10 +158,13 @@ void ReservationStation::Copy(const ReservationStation &other) {
   las_rob_tail_ = other.las_rob_tail_;
   whether_new_instruction_ = other.whether_new_instruction_;
   new_instruction_ = other.new_instruction_;
-  broadcast_dest_ = other.broadcast_dest_;
-  broadcast_val_ = other.broadcast_val_;
+  alu_broadcast_dest_ = other.alu_broadcast_dest_;
+  alu_broadcast_val_ = other.alu_broadcast_val_;
+  lsb_broadcast_dest_ = other.lsb_broadcast_dest_;
+  lsb_broadcast_val_ = other.lsb_broadcast_val_;
   memcpy(old_dependence_, other.old_dependence_, sizeof(old_dependence_));
   memcpy(old_reg_, other.old_reg_, sizeof(old_reg_));
+  memcpy(old_rob_entry_, other.old_rob_entry_, sizeof(old_rob_entry_));
 }
 
 }

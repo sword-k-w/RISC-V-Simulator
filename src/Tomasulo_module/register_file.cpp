@@ -6,6 +6,7 @@ namespace sjtu {
 
 RegisterFile::RegisterFile() {
   memset(dependence_, -1, sizeof(dependence_));
+  memset(reg_, 0, sizeof(reg_));
 }
 
 void RegisterFile::Run() {
@@ -27,6 +28,10 @@ void RegisterFile::Run() {
   }
   memcpy(rs_->old_dependence_, dependence_, sizeof(dependence_));
   memcpy(rs_->old_reg_, reg_, sizeof(reg_));
+  // std::cerr << "{RegisterFile}\n";
+  // for (int i = 0; i < 32; ++i) {
+  //   std::cerr << "x" << i << " : " << reg_[i] << " " << dependence_[i] << '\n';
+  // }
 }
 
 void RegisterFile::Copy(const RegisterFile &other) {
@@ -39,5 +44,10 @@ void RegisterFile::Copy(const RegisterFile &other) {
   commit_reg_id_ = other.commit_reg_id_;
   commit_value_ = other.commit_value_;
 }
+
+uint32_t RegisterFile::Result() const {
+  return reg_[10] & 255;
+}
+
 
 }

@@ -1,7 +1,7 @@
 #include "simulator.h"
 
 int main() {
-#ifdef DEBUG
+#ifdef LOCAL
   freopen("input.txt", "r", stdin);
   freopen("log.txt", "w", stderr);
 #endif
