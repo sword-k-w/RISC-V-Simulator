@@ -25,6 +25,9 @@ private:
   uint32_t las_rob_head_;
   uint32_t las_rob_tail_;
 
+  uint32_t las_lsb_head_;
+  uint32_t las_lsb_tail_;
+
   bool whether_commit_ = false;
   InstructionType commit_type_;
   uint32_t commit_address_;

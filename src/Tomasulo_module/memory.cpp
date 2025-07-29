@@ -57,6 +57,10 @@ void Memory::RunPC() {
 
   Instruction cur_instruction = instruction_parser_.Decode(pc_, GetInstruction());
 
+  if ((cur_instruction.format_type == IM || cur_instruction.format_type == S) && (las_lsb_tail_ + 1) % 32 == las_lsb_head_) {
+    return;
+  }
+
   if (cur_instruction.format_type != S && cur_instruction.format_type != B) {
     rf_->whether_dependence_ = true;
     rf_->new_reg_id_ = cur_instruction.rd;
@@ -150,6 +154,9 @@ void Memory::Copy(const Memory &other) {
   new_value_ = other.new_value_;
   las_rob_head_ = other.las_rob_head_;
   las_rob_tail_ = other.las_rob_tail_;
+  las_lsb_head_ = other.las_lsb_head_;
+  las_lsb_tail_ = other.las_lsb_tail_;
+  las_lsb_head_ = other.las_lsb_head_;
   whether_commit_ = other.whether_commit_;
   commit_type_ = other.commit_type_;
   commit_address_ = other.commit_address_;

@@ -12,7 +12,10 @@ void LoadStoreBuffer::Run() {
       tail_ = nxt;
       nxt = (tail_ + 31) % 32;
     }
+    std::cout << head_ << " " << tail_ << '\n';
     waiting_cycle_ = -1;
+    mem_->las_lsb_head_ = head_;
+    mem_->las_lsb_tail_ = tail_;
     return;
   }
   if (alu_broadcast_dest_ != -1) {
@@ -66,6 +69,8 @@ void LoadStoreBuffer::Run() {
       waiting_cycle_ = 2;
     }
   }
+  mem_->las_lsb_head_ = head_;
+  mem_->las_lsb_tail_ = tail_;
 }
 
 void LoadStoreBuffer::Copy(const LoadStoreBuffer &other) {
