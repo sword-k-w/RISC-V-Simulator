@@ -19,7 +19,6 @@ struct LoadStoreBufferEntry {
 class LoadStoreBuffer {
   friend class ArithmeticLogicUnit;
   friend class ReorderBuffer;
-  friend class Memory;
 private:
   bool predict_failed_ = false;
 
@@ -27,10 +26,10 @@ private:
   bool whether_new_instruction_ = false;
   Instruction new_instruction_;
 
-  int alu_broadcast_dest_;
+  int alu_broadcast_dest_ = -1;
   uint32_t alu_broadcast_address_;
 
-  int rob_broadcast_dest_;
+  int rob_broadcast_dest_ = -1;
   uint32_t rob_broadcast_address_;
   uint32_t rob_broadcast_value_;
 
@@ -40,7 +39,6 @@ private:
   LoadStoreBufferEntry entry[32];
 
 public:
-  ReorderBuffer *old_rob_;
   Memory *mem_;
   void Run();
   void Copy(const LoadStoreBuffer &);

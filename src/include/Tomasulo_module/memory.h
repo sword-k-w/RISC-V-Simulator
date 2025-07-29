@@ -40,7 +40,6 @@ public:
   ReorderBuffer *rob_;
   ReservationStation *rs_;
   RegisterFile *rf_;
-  LoadStoreBuffer *lsb_;
   Predictor *predictor_;
   Memory();
   void Init();

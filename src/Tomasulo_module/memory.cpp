@@ -33,23 +33,22 @@ void Memory::Init() {
 }
 
 
-void Memory::RunPC() {
+  void Memory::RunPC() {
+  rob_->whether_new_instruction_ = false;
+  rs_->whether_new_instruction_ = false;
+  rf_->whether_dependence_ = false;
+
   if (thaw_) {
     assert(!predict_failed_);
     pc_ = new_pc_;
     jalr_frozen_ = false;
-    thaw_ = false;
   }
   if (predict_failed_) {
     pc_ = new_pc_;
     jalr_frozen_ = false;
-    predict_failed_ = false;
   }
 
   if ((las_rob_tail_ + 1) % 32 == las_rob_head_ || jalr_frozen_) {
-    rob_->whether_new_instruction_ = false;
-    rs_->whether_new_instruction_ = false;
-    rf_->whether_dependence_ = false;
     return;
   }
 
@@ -57,9 +56,7 @@ void Memory::RunPC() {
 
   rob_->whether_new_instruction_ = true;
   rs_->whether_new_instruction_ = true;
-  if (cur_instruction.format_type == S || cur_instruction.format_type == B) {
-    rf_->whether_dependence_ = false;
-  } else {
+  if (cur_instruction.format_type != S && cur_instruction.format_type != B) {
     rf_->whether_dependence_ = true;
     rf_->new_reg_id_ = cur_instruction.rd;
     rf_->new_dependence_ = las_rob_tail_;
@@ -77,8 +74,8 @@ void Memory::RunPC() {
     cur_instruction.predict = predict;
     cur_instruction.immediate = tmp;
   } else if (cur_instruction.format_type == J) {
-    cur_instruction.immediate = pc_ + 4;
     pc_ += cur_instruction.immediate;
+    cur_instruction.immediate = pc_ + 4;
   } else if (cur_instruction.format_type == IC) {
     cur_instruction.immediate = pc_ + 4;
     jalr_frozen_ = true;
@@ -93,6 +90,7 @@ void Memory::RunPC() {
 }
 
 void Memory::RunMemory() {
+  rob_->lsb_broadcast_dest_ = -1;
   if (whether_commit_) {
     if (commit_type_ == Sb || commit_type_ == Sh || commit_type_ == Sw) {
       switch (commit_type_) {
@@ -129,7 +127,6 @@ void Memory::RunMemory() {
           assert(0);
       }
     }
-    whether_commit_ = false;
   }
 }
 

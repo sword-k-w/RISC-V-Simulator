@@ -8,6 +8,9 @@ namespace sjtu {
 ArithmeticLogicUnit::ArithmeticLogicUnit() : wireA_(0u), wireB_(0u), sel_(And) {}
 
 void ArithmeticLogicUnit::Run() {
+  rs_->broadcast_dest_ = -1;
+  rob_->alu_broadcast_address_ = -1;
+  lsb_->alu_broadcast_dest_ = -1;
   if (dest_ != -1) {
     uint32_t res;
     switch (sel_) {
@@ -102,6 +105,5 @@ void ArithmeticLogicUnit::Copy(const ArithmeticLogicUnit &other) {
   wireS_ = other.wireS_;
   sel_ = other.sel_;
 }
-
 
 }

@@ -8,22 +8,33 @@
 namespace sjtu {
 
 void ReorderBuffer::Run() {
+  mem_->thaw_ = false;
+  rs_->predict_failed_ = false;
+  rf_->predict_failed_ = false;
+  lsb_->predict_failed_ = false;
+  mem_->predict_failed_ = false;
+  rf_->whether_commit_ = false;
+  lsb_->rob_broadcast_dest_ = -1;
+  rf_->commit_rob_id_ = -1;
+  rs_->broadcast_dest_ = -1;
+
   if (alu_broadcast_dest_ != -1) {
     entry_[alu_broadcast_dest_].ready = true;
     entry_[alu_broadcast_dest_].value = alu_broadcast_val_;
     if (entry_[alu_broadcast_dest_].instruction.format_type == S) {
       entry_[alu_broadcast_dest_].address = alu_broadcast_address_;
     }
-    alu_broadcast_dest_ = -1;
   }
 
   if (lsb_broadcast_dest_ != -1) {
     entry_[lsb_broadcast_dest_].ready = true;
     entry_[lsb_broadcast_dest_].value = lsb_broadcast_val_;
-    lsb_broadcast_dest_ = -1;
   }
 
-  if (head_ < tail_ && entry_[head_].ready) {
+  if (head_ != tail_ && entry_[head_].ready) {
+    std::cerr << "@commit ";
+    entry_[head_].instruction.Print();
+    std::cerr << '\n';
     if (entry_[head_].instruction.type == Addi && entry_[head_].instruction.rd == 10
       && entry_[head_].instruction.immediate == 255 && entry_[head_].instruction.rs1 == 0) {
       std::cout << (rf_->reg_[10] & 255) << '\n';
@@ -57,15 +68,16 @@ void ReorderBuffer::Run() {
       rf_->commit_rob_id_ = head_;
       rf_->commit_reg_id_ = entry_[head_].instruction.rd;
       rf_->commit_value_ = entry_[head_].value;
+      rs_->broadcast_dest_ = head_;
+      rs_->broadcast_val_ = entry_[head_].value;
     }
-    ++head_;
+    head_ = (head_ + 1) % 32;
   }
 
   if (whether_new_instruction_) {
     entry_[tail_].instruction = new_instruction_;
     entry_[tail_].ready = false;
     tail_ = (tail_ + 1) % 32;
-    whether_new_instruction_ = false;
   }
 
   mem_->las_rob_head_ = head_;

@@ -157,13 +157,12 @@ void Instruction::Print() const {
       std::cerr << " x" << rs1 << " x" << rs2 << " " << immediate;
       break;
     case U:
-
       std::cerr << "(U) ";
       if (type == Auipc) {
         std::cerr << "auipc";
       } else {
         assert(type == Lui);
-        std::cerr << "Lui";
+        std::cerr << "lui";
       }
       std::cerr << " x" << rd << " " << immediate;
       break;
@@ -387,16 +386,19 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       break;
     case 0b0010111:
       res.format_type = U;
+      res.type = Auipc;
       res.rd = Extract(code, 7, 12);
       res.immediate = Extract(code, 12, 32) << 12;
       break;
     case 0b0110111:
       res.format_type = U;
+      res.type = Lui;
       res.rd = Extract(code, 7, 12);
       res.immediate = Extract(code, 12, 32) << 12;
       break;
     case 0b1101111:
       res.format_type = J;
+      res.type = Jal;
       res.rd = Extract(code, 7, 12);
       res.immediate = Extract(code, 31, 32) << 20;
       res.immediate |= Extract(code, 12, 20) << 12;

@@ -3,27 +3,29 @@
 namespace sjtu {
 
 void Simulator::Init() {
-  mem_[1].Init();
-  mem_[0].Copy(mem_[1]);
+  mem_[0].Init();
   alu_[0].lsb_ = &lsb_[1];
   alu_[0].rob_ = &rob_[1];
   alu_[0].rs_ = &rs_[1];
-  mem_[0].lsb_ = &lsb_[1];
   mem_[0].predictor_ = &predictor_;
   mem_[0].rf_ = &rf_[1];
   mem_[0].rob_ = &rob_[1];
   mem_[0].rs_ = &rs_[1];
+  rf_[0].rs_ = &rs_[1];
   rob_[0].lsb_ = &lsb_[1];
   rob_[0].mem_ = &mem_[1];
   rob_[0].predictor_ = &predictor_;
   rob_[0].rf_ = &rf_[1];
   rob_[0].rs_ = &rs_[1];
   rs_[0].alu_ = &alu_[1];
-  rs_[0].old_rf_ = &rf_[0];
 }
 
 void Simulator::Run() {
   ++clock_;
+  std::cerr << "[" << clock_ << "]\n";
+  if (clock_ == 13) {
+    exit(0);
+  }
 
   alu_[0].Run();
   lsb_[0].Run();

@@ -1,5 +1,6 @@
 #include "Tomasulo_module/register_file.h"
 #include <cstring>
+#include <Tomasulo_module/reservation_station.h>
 
 namespace sjtu {
 
@@ -20,12 +21,12 @@ void RegisterFile::Run() {
         reg_[commit_reg_id_] = commit_value_;
       }
     }
-    whether_commit_ = false;
   }
   if (whether_dependence_) {
     dependence_[new_reg_id_] = new_dependence_;
-    whether_dependence_ = false;
   }
+  memcpy(rs_->old_dependence_, dependence_, sizeof(dependence_));
+  memcpy(rs_->old_reg_, reg_, sizeof(reg_));
 }
 
 void RegisterFile::Copy(const RegisterFile &other) {

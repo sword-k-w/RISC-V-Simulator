@@ -1,6 +1,7 @@
 #ifndef RESERVATION_STATION_H
 #define RESERVATION_STATION_H
 
+#include <cstring>
 #include "Tomasulo_module/instruction_parser.h"
 #include "Tomasulo_module/modules.h"
 #include "Tomasulo_module/arithmetic_logic_unit.h"
@@ -23,6 +24,7 @@ class ReservationStation {
   friend class ReservationStation;
   friend class Memory;
   friend class ArithmeticLogicUnit;
+  friend class RegisterFile;
 private:
   bool predict_failed_ = false;
 
@@ -30,13 +32,15 @@ private:
   bool whether_new_instruction_ = false;
   Instruction new_instruction_;
 
-  int broadcast_dest_;
+  int broadcast_dest_ = -1;
   uint32_t broadcast_val_;
+
+  uint32_t old_reg_[32];
+  int32_t old_dependence_[32];
 
   ReservationStationEntry entry_[32];
 
 public:
-  RegisterFile* old_rf_;
   ArithmeticLogicUnit* alu_;
   void Run();
   void Copy(const ReservationStation &);

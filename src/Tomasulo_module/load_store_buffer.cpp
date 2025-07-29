@@ -5,10 +5,13 @@
 namespace sjtu {
 
 void LoadStoreBuffer::Run() {
+  mem_->whether_commit_ = false;
   if (predict_failed_) {
+    while (head_ != tail_ && (!entry[tail_ - 1].ready || entry[tail_ - 1].instruction.format_type == IM)) {
+      tail_ = (tail_ + 31) % 32;
+    }
     head_ = 0;
     tail_ = 0;
-    predict_failed_ = false;
     waiting_cycle_ = -1;
     return;
   }
@@ -22,7 +25,6 @@ void LoadStoreBuffer::Run() {
         break;
       }
     }
-    alu_broadcast_dest_ = -1;
   }
 
   if (rob_broadcast_dest_ != -1) {
@@ -34,7 +36,6 @@ void LoadStoreBuffer::Run() {
         entry[i].value = rob_broadcast_value_;
       }
     }
-    rob_broadcast_dest_ = -1;
   }
 
   if (whether_new_instruction_) {

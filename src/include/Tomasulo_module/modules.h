@@ -15,6 +15,8 @@ class LoadStoreBuffer;
 
 class Memory;
 
+class Predictor;
+
 }
 
 #endif //MODULES_H
