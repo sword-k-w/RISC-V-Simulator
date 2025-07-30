@@ -76,10 +76,10 @@ bool ReorderBuffer::Run() {
         rs_->las_rob_haed_ = 0;
         rf_->new_dependence_ = 0;
         memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
-        std::cerr << "[BAD]\n";
+        // std::cerr << "[BAD]\n";
         return false;
       }
-      std::cerr << "[OK]\n";
+      // std::cerr << "[OK]\n";
     } else if (entry_[head_].instruction.format_type == S) {
       lsb_->rob_broadcast_address_ = entry_[head_].address;
       lsb_->rob_broadcast_value_ = entry_[head_].value;
