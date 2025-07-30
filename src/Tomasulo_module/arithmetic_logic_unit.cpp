@@ -82,13 +82,13 @@ void ArithmeticLogicUnit::Run() {
       default:
         assert(0);
     }
-    if (is_zero_) {
-      if (sel_ == Jalr) {
-        wireS_ = 0;
-      } else {
-        res = 0;
-      }
-    }
+    // if (is_zero_) {
+    //   if (sel_ == Jalr) {
+    //     wireS_ = 0;
+    //   } else {
+    //     res = 0;
+    //   }
+    // }
     if (sel_ != Lb && sel_ != Lbu && sel_ != Lh && sel_ != Lhu && sel_ != Lw && sel_ != Sb && sel_ != Sh && sel_ != Sw) {
       rs_->alu_broadcast_dest_ = dest_;
       if (sel_ == Jalr) {
