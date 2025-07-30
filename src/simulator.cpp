@@ -1,5 +1,7 @@
 #include "simulator.h"
 
+#include <random>
+
 namespace sjtu {
 
 void Simulator::Init() {
@@ -25,22 +27,31 @@ void Simulator::Init() {
   rs_[0].alu_ = &alu_[1];
 }
 
+std::mt19937 rnd(time(nullptr));
+
 void Simulator::Run() {
   ++clock_;
-  // std::cerr << "[" << clock_ << "]\n";
-  // if (clock_ == 10000000) {
-  //   std::cout << "time is up!\n";
-  //   exit(0);
-  // }
-  alu_[0].Run();
-  lsb_[0].Run();
-  mem_[0].RunPC();
-  mem_[0].RunMemory();
-  rs_[0].Run();
-  rf_[0].Run();
-  if (rob_[0].Run()) {
-    std::cout << rf_[0].Result() << '\n';
-    exit(0);
+
+  int p[7] = {0, 1, 2, 3, 4, 5, 6};
+  std::shuffle(p, p + 7, rnd);
+  for (int i = 0; i < 7; ++i) {
+    if (p[i] == 0) {
+      alu_[0].Run();
+    } else if (p[i] == 1) {
+      lsb_[0].Run();
+    } else if (p[i] == 2) {
+      mem_[0].RunPC();
+    } else if (p[i] == 3) {
+      mem_[0].RunMemory();
+    } else if (p[i] == 4) {
+      rs_[0].Run();
+    } else if (p[i] == 5) {
+      rf_[0].Run();
+    } else if (rob_[0].Run()) {
+      std::cerr << "Total Cycle Count = " << clock_ << '\n';
+      std::cout << rf_[0].Result() << '\n';
+      exit(0);
+    }
   }
 
   alu_[0].Copy(alu_[1]);
@@ -49,7 +60,6 @@ void Simulator::Run() {
   rob_[0].Copy(rob_[1]);
   rs_[0].Copy(rs_[1]);
   rf_[0].Copy(rf_[1]);
-  // std::cerr << '\n';
 }
 
 }
