@@ -5,8 +5,6 @@
 
 namespace sjtu {
 
-ArithmeticLogicUnit::ArithmeticLogicUnit() : wireA_(0u), wireB_(0u), sel_(And) {}
-
 void ArithmeticLogicUnit::Run() {
   rs_->alu_broadcast_dest_ = -1;
   rob_->alu_broadcast_dest_ = -1;
