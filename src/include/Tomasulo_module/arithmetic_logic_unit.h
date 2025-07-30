@@ -10,7 +10,10 @@ namespace sjtu {
 
 class ArithmeticLogicUnit {
   friend class ReservationStation;
+  friend class ReorderBuffer;
 private:
+  bool predict_failed = false;
+
   int dest_ = -1;
   uint32_t wireA_;
   uint32_t wireB_;

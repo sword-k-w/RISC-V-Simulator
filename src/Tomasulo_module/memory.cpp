@@ -114,7 +114,7 @@ void Memory::RunMemory() {
         case Sb:
           memory_[commit_address_] = commit_value_ & 255;
       }
-    } else {
+    } else if (!predict_failed_) {
       rs_->lsb_broadcast_dest_ = commit_dest_;
       rob_->lsb_broadcast_dest_ = commit_dest_;
       switch (commit_type_) {

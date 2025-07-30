@@ -4,49 +4,7 @@
 
 namespace sjtu {
 
-void LoadStoreBuffer::Run() {
-  mem_->whether_commit_ = false;
-  if (predict_failed_) {
-    uint32_t nxt = (tail_ + 31) % 32;
-    while (head_ != tail_ && (!entry[nxt].ready || entry[nxt].instruction.format_type == IM)) {
-      tail_ = nxt;
-      nxt = (tail_ + 31) % 32;
-    }
-    waiting_cycle_ = -1;
-    mem_->las_lsb_head_ = head_;
-    mem_->las_lsb_tail_ = tail_;
-    return;
-  }
-  if (alu_broadcast_dest_ != -1) {
-    for (int i = head_; i != tail_; i = (i + 1) % 32) {
-      if (entry[i].dest == alu_broadcast_dest_) {
-        assert(entry[i].instruction.format_type == IM);
-        entry[i].ready = true;
-        entry[i].address = alu_broadcast_address_;
-        break;
-      }
-    }
-  }
-
-  if (rob_broadcast_dest_ != -1) {
-    for (int i = head_; i != tail_; i = (i + 1) % 32) {
-      if (entry[i].dest == rob_broadcast_dest_) {
-        assert(entry[i].instruction.format_type == S);
-        entry[i].ready = true;
-        entry[i].address = rob_broadcast_address_;
-        entry[i].value = rob_broadcast_value_;
-      }
-    }
-  }
-
-  if (whether_new_instruction_) {
-    assert((tail_ + 1) % 32 != head_);
-    entry[tail_].instruction = new_instruction_;
-    entry[tail_].ready = false;
-    entry[tail_].dest = las_rob_tail_;
-    tail_ = (tail_ + 1) % 32;
-  }
-
+void LoadStoreBuffer::PassInstruction() {
   if (waiting_cycle_ > 0) {
     --waiting_cycle_;
     assert(head_ != tail_ && entry[head_].ready);
@@ -68,6 +26,56 @@ void LoadStoreBuffer::Run() {
       waiting_cycle_ = 2;
     }
   }
+}
+
+void LoadStoreBuffer::Run() {
+  mem_->whether_commit_ = false;
+  if (predict_failed_) {
+    uint32_t nxt = (tail_ + 31) % 32;
+    while (head_ != tail_ && (!entry[nxt].ready || entry[nxt].instruction.format_type == IM)) {
+      tail_ = nxt;
+      nxt = (tail_ + 31) % 32;
+    }
+    if (head_ == tail_) {
+      waiting_cycle_ = -1;
+    } else {
+      PassInstruction();
+    }
+    mem_->las_lsb_head_ = head_;
+    mem_->las_lsb_tail_ = tail_;
+    return;
+  }
+
+  if (alu_broadcast_dest_ != -1) {
+    for (int i = head_; i != tail_; i = (i + 1) % 32) {
+      if (!entry[i].ready && entry[i].dest == alu_broadcast_dest_) {
+        assert(entry[i].instruction.format_type == IM);
+        entry[i].ready = true;
+        entry[i].address = alu_broadcast_address_;
+        break;
+      }
+    }
+  }
+
+  if (rob_broadcast_dest_ != -1) {
+    for (int i = head_; i != tail_; i = (i + 1) % 32) {
+      if (!entry[i].ready && entry[i].dest == rob_broadcast_dest_) {
+        assert(entry[i].instruction.format_type == S);
+        entry[i].ready = true;
+        entry[i].address = rob_broadcast_address_;
+        entry[i].value = rob_broadcast_value_;
+      }
+    }
+  }
+
+  if (whether_new_instruction_) {
+    assert((tail_ + 1) % 32 != head_);
+    entry[tail_].instruction = new_instruction_;
+    entry[tail_].ready = false;
+    entry[tail_].dest = las_rob_tail_;
+    tail_ = (tail_ + 1) % 32;
+  }
+  PassInstruction();
   mem_->las_lsb_head_ = head_;
   mem_->las_lsb_tail_ = tail_;
 }

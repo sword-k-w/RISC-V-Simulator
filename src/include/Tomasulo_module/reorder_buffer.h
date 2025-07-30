@@ -35,6 +35,7 @@ private:
   uint32_t tail_ = 0;
   RoBEntry entry_[32];
 public:
+  ArithmeticLogicUnit *alu_;
   Memory *mem_;
   ReservationStation *rs_;
   RegisterFile *rf_;

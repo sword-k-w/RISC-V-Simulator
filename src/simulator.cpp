@@ -14,6 +14,7 @@ void Simulator::Init() {
   mem_[0].rs_ = &rs_[1];
   mem_[0].lsb_ = &lsb_[1];
   rf_[0].rs_ = &rs_[1];
+  rob_[0].alu_ = &alu_[1];
   rob_[0].lsb_ = &lsb_[1];
   rob_[0].mem_ = &mem_[1];
   rob_[0].predictor_ = &predictor_;

@@ -39,6 +39,8 @@ private:
   uint32_t tail_ = 0;
   LoadStoreBufferEntry entry[32];
 
+  void PassInstruction();
+
 public:
   Memory *mem_;
   void Run();

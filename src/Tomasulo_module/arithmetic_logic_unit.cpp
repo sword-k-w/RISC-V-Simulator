@@ -11,7 +11,7 @@ void ArithmeticLogicUnit::Run() {
   rs_->alu_broadcast_dest_ = -1;
   rob_->alu_broadcast_dest_ = -1;
   lsb_->alu_broadcast_dest_ = -1;
-  if (dest_ != -1) {
+  if (dest_ != -1 && !predict_failed) {
     uint32_t res;
     switch (sel_) {
       case Add:
@@ -107,6 +107,7 @@ void ArithmeticLogicUnit::Run() {
 }
 
 void ArithmeticLogicUnit::Copy(const ArithmeticLogicUnit &other) {
+  predict_failed = other.predict_failed;
   dest_ = other.dest_;
   wireA_ = other.wireA_;
   wireB_ = other.wireB_;
