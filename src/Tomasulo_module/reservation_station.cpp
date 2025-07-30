@@ -38,10 +38,10 @@ void ReservationStation::Run() {
     if (index == 32) {
       assert(0);
     }
-    // entry_[index].is_zero = false;
+    entry_[index].is_zero = false;
     if (new_instruction_.rd == 0) {
-      // assert(new_instruction_.format_type == J || new_instruction_.format_type == IC);
-    //   entry_[index].is_zero = true;
+      assert(new_instruction_.format_type == J || new_instruction_.format_type == IC || new_instruction_.format_type == S || new_instruction_.format_type == B);
+      entry_[index].is_zero = true;
     }
     entry_[index].busy = true;
     entry_[index].type = new_instruction_.type;
