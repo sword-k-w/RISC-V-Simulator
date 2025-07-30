@@ -62,9 +62,9 @@ void Memory::RunPC() {
     return;
   }
 
-  if (cur_instruction.rd == 0 && cur_instruction.format_type != J && cur_instruction.format_type != IC) {
-    return;
-  }
+  // if (cur_instruction.rd == 0 && cur_instruction.format_type != J && cur_instruction.format_type != IC) {
+  //   return;
+  // }
   if (cur_instruction.format_type != S && cur_instruction.format_type != B) {
     rf_->whether_dependence_ = true;
     rf_->new_reg_id_ = cur_instruction.rd;
