@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(src/include)
 
-add_definitions(-DLOCAL)
+#add_definitions(-DLOCAL)
 #
 #add_executable(naive_code
 #    src/pipeline_module/selector.cpp
