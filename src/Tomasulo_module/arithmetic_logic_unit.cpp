@@ -11,7 +11,7 @@ void ArithmeticLogicUnit::Run() {
   rs_->alu_broadcast_dest_ = -1;
   rob_->alu_broadcast_dest_ = -1;
   lsb_->alu_broadcast_dest_ = -1;
-  if (dest_ != -1 && !predict_failed) {
+  if (dest_ != -1 && !predict_failed_) {
     uint32_t res;
     switch (sel_) {
       case Add:
@@ -82,6 +82,13 @@ void ArithmeticLogicUnit::Run() {
       default:
         assert(0);
     }
+    if (is_zero_) {
+      if (sel_ == Jalr) {
+        wireS_ = 0;
+      } else {
+        res = 0;
+      }
+    }
     if (sel_ != Lb && sel_ != Lbu && sel_ != Lh && sel_ != Lhu && sel_ != Lw && sel_ != Sb && sel_ != Sh && sel_ != Sw) {
       rs_->alu_broadcast_dest_ = dest_;
       if (sel_ == Jalr) {
@@ -107,7 +114,8 @@ void ArithmeticLogicUnit::Run() {
 }
 
 void ArithmeticLogicUnit::Copy(const ArithmeticLogicUnit &other) {
-  predict_failed = other.predict_failed;
+  is_zero_ = other.is_zero_;
+  predict_failed_ = other.predict_failed_;
   dest_ = other.dest_;
   wireA_ = other.wireA_;
   wireB_ = other.wireB_;

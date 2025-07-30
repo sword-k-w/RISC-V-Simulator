@@ -19,6 +19,7 @@ struct ReservationStationEntry {
   int32_t depend2{-1};
   uint32_t dest;
   int32_t immediate_S;
+  bool is_zero = false;
 };
 
 class ReservationStation {
@@ -50,6 +51,7 @@ private:
 
 public:
   ArithmeticLogicUnit* alu_;
+  void CheckDependence(uint32_t &, int32_t &, const uint32_t &);
   void Run();
   void Copy(const ReservationStation &);
 };

@@ -57,11 +57,15 @@ void Memory::RunPC() {
 
   Instruction cur_instruction = instruction_parser_.Decode(pc_, GetInstruction());
 
-  if ((cur_instruction.format_type == IM || cur_instruction.format_type == S) && ((las_lsb_tail_ + 1) % 32 == las_lsb_head_ || (las_lsb_tail_ + 2) % 32 == las_lsb_head_)) {
+  if ((cur_instruction.format_type == IM || cur_instruction.format_type == S)
+    && ((las_lsb_tail_ + 1) % 32 == las_lsb_head_ || (las_lsb_tail_ + 2) % 32 == las_lsb_head_)) {
     return;
   }
 
   if (cur_instruction.format_type != S && cur_instruction.format_type != B) {
+    if (cur_instruction.rd == 0 && cur_instruction.format_type != J && cur_instruction.format_type != IC) {
+      return;
+    }
     rf_->whether_dependence_ = true;
     rf_->new_reg_id_ = cur_instruction.rd;
   }

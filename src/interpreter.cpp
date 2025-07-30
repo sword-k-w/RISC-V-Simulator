@@ -5,11 +5,8 @@ namespace sjtu {
 Interpreter::Interpreter() : pc_(0u) {}
 
 void Interpreter::Run() {
-  int cnt = 0;
   while (true) {
     // PC
-    ++cnt;
-    std::cerr << cnt << " ";
     MEM_.SetPC(pc_);
     selectorA_.SetWire1(pc_);
     selectorPC_.SetWire0(pc_ + 4);

@@ -12,7 +12,8 @@ class ArithmeticLogicUnit {
   friend class ReservationStation;
   friend class ReorderBuffer;
 private:
-  bool predict_failed = false;
+  bool predict_failed_ = false;
+  bool is_zero_ = false;
 
   int dest_ = -1;
   uint32_t wireA_;

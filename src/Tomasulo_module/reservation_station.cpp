@@ -4,8 +4,21 @@
 
 namespace sjtu {
 
+void ReservationStation::CheckDependence(uint32_t &val, int32_t &depend, const uint32_t &reg_id) {
+  if (reg_id == 0 || old_dependence_[reg_id] == -1) {
+    val = old_reg_[reg_id];
+    depend = -1;
+  } else if (old_rob_entry_[old_dependence_[reg_id]].ready) {
+    val = old_rob_entry_[old_dependence_[reg_id]].value;
+    depend = -1;
+  } else {
+    depend = old_dependence_[reg_id];
+  }
+}
+
 void ReservationStation::Run() {
   alu_->dest_ = -1;
+  alu_->is_zero_ = false;
   if (predict_failed_) {
     for (int i = 0; i < 32; ++i) {
       entry_[i].busy = false;
@@ -25,6 +38,11 @@ void ReservationStation::Run() {
     if (index == 32) {
       assert(0);
     }
+    entry_[index].is_zero = false;
+    if (new_instruction_.rd == 0) {
+      assert(new_instruction_.format_type == J || new_instruction_.format_type == IC);
+      entry_[index].is_zero = true;
+    }
     entry_[index].busy = true;
     entry_[index].type = new_instruction_.type;
     entry_[index].dest = las_rob_tail_;
@@ -32,15 +50,7 @@ void ReservationStation::Run() {
       entry_[index].immediate_S = new_instruction_.rs2;
       entry_[index].depend2 = -1;
       entry_[index].val2 = new_instruction_.immediate;
-      if (old_dependence_[new_instruction_.rs1] == -1) {
-        entry_[index].depend1 = -1;
-        entry_[index].val1 = old_reg_[new_instruction_.rs1];
-      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs1]].ready) {
-        entry_[index].depend1 = -1;
-        entry_[index].val1 = old_rob_entry_[old_dependence_[new_instruction_.rs1]].value;
-      } else {
-        entry_[index].depend1 = old_dependence_[new_instruction_.rs1];
-      }
+      CheckDependence(entry_[index].val1, entry_[index].depend1, new_instruction_.rs1);
     } else if (new_instruction_.format_type == J || new_instruction_.format_type == U) {
       entry_[index].depend1 = -1;
       entry_[index].depend2 = -1;
@@ -48,55 +58,15 @@ void ReservationStation::Run() {
       entry_[index].val2 = 0;
     } else if (new_instruction_.format_type == S) {
       entry_[index].immediate_S = new_instruction_.immediate;
-      if (old_dependence_[new_instruction_.rs1] == -1) {
-        entry_[index].depend1 = -1;
-        entry_[index].val1 = old_reg_[new_instruction_.rs1];
-      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs1]].ready) {
-        entry_[index].depend1 = -1;
-        entry_[index].val1 = old_rob_entry_[old_dependence_[new_instruction_.rs1]].value;
-      } else {
-        entry_[index].depend1 = old_dependence_[new_instruction_.rs1];
-      }
-      if (old_dependence_[new_instruction_.rs2] == -1) {
-        entry_[index].depend2 = -1;
-        entry_[index].val2 = old_reg_[new_instruction_.rs2];
-      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs2]].ready) {
-        entry_[index].depend2 = -1;
-        entry_[index].val2 = old_rob_entry_[old_dependence_[new_instruction_.rs2]].value;
-      } else {
-        entry_[index].depend2 = old_dependence_[new_instruction_.rs2];
-      }
+      CheckDependence(entry_[index].val1, entry_[index].depend1, new_instruction_.rs1);
+      CheckDependence(entry_[index].val2, entry_[index].depend2, new_instruction_.rs2);
     } else if (new_instruction_.format_type != R && new_instruction_.format_type != B) {
       entry_[index].depend2 = -1;
       entry_[index].val2 = new_instruction_.immediate;
-      if (old_dependence_[new_instruction_.rs1] == -1) {
-        entry_[index].depend1 = -1;
-        entry_[index].val1 = old_reg_[new_instruction_.rs1];
-      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs1]].ready) {
-        entry_[index].depend1 = -1;
-        entry_[index].val1 = old_rob_entry_[old_dependence_[new_instruction_.rs1]].value;
-      } else {
-        entry_[index].depend1 = old_dependence_[new_instruction_.rs1];
-      }
+      CheckDependence(entry_[index].val1, entry_[index].depend1, new_instruction_.rs1);
     } else {
-      if (old_dependence_[new_instruction_.rs1] == -1) {
-        entry_[index].depend1 = -1;
-        entry_[index].val1 = old_reg_[new_instruction_.rs1];
-      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs1]].ready) {
-        entry_[index].depend1 = -1;
-        entry_[index].val1 = old_rob_entry_[old_dependence_[new_instruction_.rs1]].value;
-      } else {
-        entry_[index].depend1 = old_dependence_[new_instruction_.rs1];
-      }
-      if (old_dependence_[new_instruction_.rs2] == -1) {
-        entry_[index].depend2 = -1;
-        entry_[index].val2 = old_reg_[new_instruction_.rs2];
-      } else if (old_rob_entry_[old_dependence_[new_instruction_.rs2]].ready) {
-        entry_[index].depend2 = -1;
-        entry_[index].val2 = old_rob_entry_[old_dependence_[new_instruction_.rs2]].value;
-      } else {
-        entry_[index].depend2 = old_dependence_[new_instruction_.rs2];
-      }
+      CheckDependence(entry_[index].val1, entry_[index].depend1, new_instruction_.rs1);
+      CheckDependence(entry_[index].val2, entry_[index].depend2, new_instruction_.rs2);
     }
   }
 
@@ -146,6 +116,7 @@ void ReservationStation::Run() {
           alu_->wireS_ = entry_[i].immediate_S;
         }
       }
+      alu_->is_zero_ = entry_[i].is_zero;
       alu_->wireA_ = entry_[i].val1;
       alu_->sel_ = entry_[i].type;
       alu_->dest_ = entry_[i].dest;

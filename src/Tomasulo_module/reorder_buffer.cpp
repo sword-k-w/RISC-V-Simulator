@@ -8,7 +8,7 @@
 namespace sjtu {
 
 bool ReorderBuffer::Run() {
-  alu_->predict_failed = false;
+  alu_->predict_failed_ = false;
   other_->predict_failed = false;
   mem_->thaw_ = false;
   rs_->predict_failed_ = false;
@@ -60,7 +60,7 @@ bool ReorderBuffer::Run() {
     } else if (entry_[head_].instruction.format_type == B) {
       predictor_->Feedback(entry_[head_].value);
       if (entry_[head_].value != entry_[head_].instruction.predict) {
-        alu_->predict_failed = true;
+        alu_->predict_failed_ = true;
         rs_->predict_failed_ = true;
         rf_->predict_failed_ = true;
         lsb_->predict_failed_ = true;
