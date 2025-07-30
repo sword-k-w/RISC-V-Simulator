@@ -25,7 +25,6 @@ public:
   ReorderBuffer *rob_;
   ReservationStation *rs_;
   LoadStoreBuffer *lsb_;
-  ArithmeticLogicUnit();
   void Run();
   void Copy(const ArithmeticLogicUnit &);
 };
