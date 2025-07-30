@@ -39,10 +39,10 @@ void ReservationStation::Run() {
       assert(0);
     }
     // entry_[index].is_zero = false;
-    // if (new_instruction_.rd == 0) {
-    //   assert(new_instruction_.format_type == J || new_instruction_.format_type == IC);
+    if (new_instruction_.rd == 0) {
+      assert(new_instruction_.format_type == J || new_instruction_.format_type == IC);
     //   entry_[index].is_zero = true;
-    // }
+    }
     entry_[index].busy = true;
     entry_[index].type = new_instruction_.type;
     entry_[index].dest = las_rob_tail_;
