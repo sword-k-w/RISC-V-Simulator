@@ -3,6 +3,7 @@
 
 #include "Tomasulo_module/modules.h"
 #include <cstdint>
+#include <ostream>
 
 namespace sjtu {
 
@@ -29,6 +30,7 @@ public:
   void Run();
   void Copy(const RegisterFile &);
   uint32_t Result() const;
+  void Print(std::ostream &) const;
 };
 
 }

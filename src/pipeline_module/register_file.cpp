@@ -40,7 +40,7 @@ uint32_t RegisterFile::GetReturnValue() const {
 }
 
 void RegisterFile::Print() const {
-  for (int i = 0; i < 32; ++i) {
+  for (int i = 12; i < 16; ++i) {
     std::cerr << "[x" << i << " = " << register_[i] << "]\n";
   }
 }

@@ -15,7 +15,7 @@ namespace sjtu {
 
 class Simulator {
 private:
-  uint32_t clock_;
+  uint64_t clock_;
   ArithmeticLogicUnit alu_[2];
   LoadStoreBuffer lsb_[2];
   Memory mem_[2];

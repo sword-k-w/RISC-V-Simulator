@@ -19,7 +19,9 @@ void RegisterFile::Run() {
     return;
   }
   if (whether_commit_ && commit_reg_id_) {
-    dependence_[commit_reg_id_] = -1;
+    if (commit_rob_id_ == dependence_[commit_reg_id_]) {
+      dependence_[commit_reg_id_] = -1;
+    }
     reg_[commit_reg_id_] = commit_value_;
   }
   if (whether_dependence_ && new_reg_id_) {
@@ -27,9 +29,6 @@ void RegisterFile::Run() {
   }
   memcpy(rs_->old_dependence_, dependence_, sizeof(dependence_));
   memcpy(rs_->old_reg_, reg_, sizeof(reg_));
-  // for (int i = 9; i < 12; ++i) {
-  //   std::cerr << "[x" << i << " : " << reg_[i] << " " << dependence_[i] << "]";
-  // }
 }
 
 void RegisterFile::Copy(const RegisterFile &other) {
@@ -45,6 +44,12 @@ void RegisterFile::Copy(const RegisterFile &other) {
 
 uint32_t RegisterFile::Result() const {
   return reg_[10] & 255;
+}
+
+void RegisterFile::Print(std::ostream &os) const {
+  for (int i = 12; i < 16; ++i) {
+    os << "[x" << i << " = " << reg_[i] << " depend on " << dependence_[i] << "]\n";
+  }
 }
 
 

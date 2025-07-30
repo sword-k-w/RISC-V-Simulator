@@ -21,26 +21,27 @@ void Simulator::Init() {
   rob_[0].rf_ = &rf_[1];
   rob_[0].rs_ = &rs_[1];
   rob_[0].other_ = &rob_[1];
+  rob_[0].rf_print_ = &rf_[0];
   rs_[0].alu_ = &alu_[1];
 }
 
 void Simulator::Run() {
   ++clock_;
-  // std::cout << "[" << clock_ << "]\n";
-  if (clock_ == 1000000) {
-    std::cout << "time is up!\n";
-    exit(0);
-  }
+  // std::cerr << "[" << clock_ << "]\n";
+  // if (clock_ == 10000000) {
+  //   std::cout << "time is up!\n";
+  //   exit(0);
+  // }
   alu_[0].Run();
   lsb_[0].Run();
   mem_[0].RunPC();
   mem_[0].RunMemory();
+  rs_[0].Run();
+  rf_[0].Run();
   if (rob_[0].Run()) {
     std::cout << rf_[0].Result() << '\n';
     exit(0);
   }
-  rs_[0].Run();
-  rf_[0].Run();
 
   alu_[0].Copy(alu_[1]);
   lsb_[0].Copy(lsb_[1]);
@@ -48,6 +49,7 @@ void Simulator::Run() {
   rob_[0].Copy(rob_[1]);
   rs_[0].Copy(rs_[1]);
   rf_[0].Copy(rf_[1]);
+  // std::cerr << '\n';
 }
 
 }

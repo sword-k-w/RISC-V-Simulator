@@ -42,6 +42,8 @@ public:
   LoadStoreBuffer *lsb_;
   Predictor *predictor_;
   ReorderBuffer *other_;
+
+  RegisterFile *rf_print_; // for debug
   bool Run();
   void Copy(const ReorderBuffer &);
 };

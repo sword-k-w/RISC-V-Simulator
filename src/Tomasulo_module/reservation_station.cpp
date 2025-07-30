@@ -98,13 +98,6 @@ void ReservationStation::Run() {
     }
   }
 
-  // std::cout <<"$RS$\n";
-  // for (int i = 0; i < 32; ++i) {
-  //   if (entry_[i].busy) {
-  //     std::cout << entry_[i].type << " " << entry_[i].depend1 << " " << entry_[i].val1 << " " << entry_[i].depend2 << " " << entry_[i].val2 << " " << entry_[i].dest << '\n';
-  //   }
-  // }
-  // std::cout << '\n';
 
   for (int i = 0; i < 32; ++i) {
     if (entry_[i].busy && entry_[i].depend1 == -1 && entry_[i].depend2 == -1) {
@@ -125,6 +118,129 @@ void ReservationStation::Run() {
       break;
     }
   }
+  // std::cerr << "<RS>\n";
+  // for (int i = 0; i < 32; ++i) {
+  //   if (entry_[i].busy) {
+  //     std::cerr << i << " ";
+  //     switch (entry_[i].type) {
+  //       case Add:
+  //         std::cerr << "add";
+  //       break;
+  //       case Sub:
+  //         std::cerr << "sub";
+  //       break;
+  //       case And:
+  //         std::cerr << "and";
+  //       break;
+  //       case Or:
+  //         std::cerr << "or";
+  //       break;
+  //       case Xor:
+  //         std::cerr << "xor";
+  //       break;
+  //       case Sll:
+  //         std::cerr << "sll";
+  //       break;
+  //       case Srl:
+  //         std::cerr << "srl";
+  //       break;
+  //       case Sra:
+  //         std::cerr << "sra";
+  //       break;
+  //       case Slt:
+  //         std::cerr << "slt";
+  //       break;
+  //       case Sltu:
+  //         std::cerr << "sltu";
+  //       break;
+  //       case Addi:
+  //         std::cerr << "addi";
+  //       break;
+  //       case Andi:
+  //         std::cerr << "andi";
+  //       break;
+  //       case Ori:
+  //         std::cerr << "ori";
+  //       break;
+  //       case Xori:
+  //         std::cerr << "xori";
+  //       break;
+  //       case Slli:
+  //         std::cerr << "slli";
+  //       break;
+  //       case Srli:
+  //         std::cerr << "srli";
+  //       break;
+  //       case Srai:
+  //         std::cerr << "srai";
+  //       break;
+  //       case Slti:
+  //         std::cerr << "slti";
+  //       break;
+  //       case Sltiu:
+  //         std::cerr << "sltiu";
+  //       break;
+  //       case Lb:
+  //         std::cerr << "lb";
+  //       break;
+  //       case Lbu:
+  //         std::cerr << "lbu";
+  //       break;
+  //       case Lh:
+  //         std::cerr << "lh";
+  //       break;
+  //       case Lhu:
+  //         std::cerr << "lhu";
+  //       break;
+  //       case Lw:
+  //         std::cerr << "lw";
+  //       break;
+  //       case Sb:
+  //         std::cerr << "sb";
+  //       break;
+  //       case Sh:
+  //         std::cerr << "sh";
+  //       break;
+  //       case Sw:
+  //         std::cerr << "sw";
+  //       break;
+  //       case Beq:
+  //         std::cerr << "beq";
+  //       break;
+  //       case Bge:
+  //         std::cerr << "bge";
+  //       break;
+  //       case Bgeu:
+  //         std::cerr << "bgeu";
+  //       break;
+  //       case Blt:
+  //         std::cerr << "blt";
+  //       break;
+  //       case Bltu:
+  //         std::cerr << "bltu";
+  //       break;
+  //       case Bne:
+  //         std::cerr << "bne";
+  //       break;
+  //       case Jal:
+  //         std::cerr << "jal";
+  //       break;
+  //       case Jalr:
+  //         std::cerr << "jalr";
+  //       break;
+  //       case Auipc:
+  //         std::cerr << "auipc";
+  //       break;
+  //       case Lui:
+  //         std::cerr << "lui";
+  //       break;
+  //       default:
+  //         assert(0);
+  //     }
+  //     std::cerr << " " << entry_[i].dest << " " << entry_[i].depend1 << " " << entry_[i].val1 << " " << entry_[i].depend2 << " " << entry_[i].val2 << '\n';
+  //   }
+  // }
+  // std::cerr << '\n';
 }
 
 void ReservationStation::Copy(const ReservationStation &other) {
