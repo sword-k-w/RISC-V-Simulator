@@ -5,10 +5,14 @@
 namespace sjtu {
 
 void Simulator::Init(int32_t argc, char **argv) {
-  if (argc == 2 && strcmp(argv[1], "saturating") == 0) {
-    predictor_ = new SaturatingPredictor();
+  if (argc == 2 && strcmp(argv[1], "local") == 0) {
+    predictor_ = new LocalPredictor();
+  } else if (argc == 2 && strcmp(argv[1], "global") == 0) {
+    predictor_ = new GlobalPredictor();
   } else if (argc == 2 && strcmp(argv[1], "two_level_adaptive") == 0) {
     predictor_ = new TwoLevelAdaptivePredictor();
+  } else if (argc == 2 && strcmp(argv[1], "tournament") == 0) {
+    predictor_ = new TournamentPredictor();
   } else {
     predictor_ = new TwoLevelAdaptivePredictor();
   }

@@ -66,9 +66,9 @@ void Memory::RunPC() {
     rf_->new_reg_id_ = cur_instruction.rd;
   }
   if (cur_instruction.format_type == B) {
-    bool predict = predictor_->Predict(cur_instruction.address_hash_val);
+    uint8_t predict = predictor_->Predict(cur_instruction.address_hash_val);
     uint32_t tmp = pc_;
-    if (predict) {
+    if (predict & 1) {
       pc_ += cur_instruction.immediate;
       tmp += 4;
     } else {

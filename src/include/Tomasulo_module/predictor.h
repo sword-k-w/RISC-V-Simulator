@@ -14,18 +14,16 @@ class Predictor {
   friend class ReorderBuffer;
 public:
   virtual ~Predictor() = default;
-  virtual bool Predict(const uint16_t &) const = 0;
-  virtual void Feedback(const uint16_t &, const bool &, const bool &) = 0;
+  virtual auto Predict(const uint16_t &) -> uint8_t const = 0;
+  virtual void Feedback(const uint16_t &, const bool &, const uint8_t &) = 0;
   virtual void Report() const = 0;
 };
 
-class SaturatingPredictor : public Predictor {
-  friend class Memory;
-  friend class ReorderBuffer;
+class LocalPredictor : public Predictor {
 public:
-  SaturatingPredictor();
-  bool Predict(const uint16_t &) const override;
-  void Feedback(const uint16_t &, const bool &, const bool &) override;
+  LocalPredictor();
+  auto Predict(const uint16_t &) -> uint8_t const override;
+  void Feedback(const uint16_t &, const bool &, const uint8_t &) override;
   void Report() const override;
 private:
   int32_t state_[4096];
@@ -33,17 +31,40 @@ private:
   uint32_t total_cnt_ = 0;
 };
 
+class GlobalPredictor : public Predictor {
+public:
+  auto Predict(const uint16_t &) -> uint8_t const override;
+  void Feedback(const uint16_t &, const bool &, const uint8_t &) override;
+  void Report() const override;
+private:
+  int32_t state_ = 2;
+  uint32_t success_cnt_ = 0;
+  uint32_t total_cnt_ = 0;
+};
+
 class TwoLevelAdaptivePredictor : public Predictor  {
-  friend class Memory;
-  friend class ReorderBuffer;
 public:
   TwoLevelAdaptivePredictor();
-  bool Predict(const uint16_t &) const override;
-  void Feedback(const uint16_t &, const bool &, const bool &) override;
+  auto Predict(const uint16_t &) -> uint8_t const override;
+  void Feedback(const uint16_t &, const bool &, const uint8_t &) override;
   void Report() const override;
 private:
   uint8_t history_[4096];
   int32_t state_[4096][4];
+  uint32_t success_cnt_ = 0;
+  uint32_t total_cnt_ = 0;
+};
+
+class TournamentPredictor : public Predictor {
+public:
+  TournamentPredictor();
+  auto Predict(const uint16_t &) -> uint8_t const override;
+  void Feedback(const uint16_t &, const bool &, const uint8_t &) override;
+  void Report() const override;
+private:
+  int32_t choose_state_ = 2;
+  int32_t local_state_[4096];
+  int32_t global_state_ = 2;
   uint32_t success_cnt_ = 0;
   uint32_t total_cnt_ = 0;
 };

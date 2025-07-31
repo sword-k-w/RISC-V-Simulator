@@ -1,7 +1,5 @@
 # RISC-V Simulator in C++!
 
-## single-stage pipeline! void me!
-
 ## Tomasulo
 
 ### idea
@@ -29,3 +27,11 @@ class module2 {
 m1[0].ptr = &m2[1];
 
 ```
+
+### Predictor
+
+| testcase \ predictor | local | global | two_level adaptive |  tournament  |
+|:--------------------:|:-----:|:------:|:------------------:|:------------:|
+|     array_test1      |   %   |   85   |         92         |              |
+|     array_test2      |  88   |   95   |         89         |              |
+|      basicopt1       |  92   |   88   |         94         |              |
