@@ -14,14 +14,6 @@ enum RWSize {
 };
 
 class Memory {
-private:
-  std::unordered_map<uint32_t, uint32_t> memory_;
-  uint32_t pc_;
-  uint32_t address_;
-  uint32_t input_;
-  bool is_read_;
-  bool is_unsigned_;
-  RWSize type_;
 public:
   Memory();
   uint32_t DataResult();
@@ -33,6 +25,14 @@ public:
 
   uint32_t InstructionResult();
   void SetPC(const uint32_t &);
+private:
+  std::unordered_map<uint32_t, uint32_t> memory_;
+  uint32_t pc_;
+  uint32_t address_;
+  uint32_t input_;
+  bool is_read_;
+  bool is_unsigned_;
+  RWSize type_;
 };
 
 }

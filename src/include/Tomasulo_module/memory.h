@@ -12,6 +12,18 @@ namespace sjtu {
 class Memory {
   friend class ReorderBuffer;
   friend class LoadStoreBuffer;
+public:
+  LoadStoreBuffer *lsb_;
+  ReorderBuffer *rob_;
+  ReservationStation *rs_;
+  RegisterFile *rf_;
+  Predictor *predictor_;
+  Memory();
+  void Init();
+  void RunPC();
+  void RunMemory();
+  void Copy(const Memory &);
+  uint32_t GetInstruction();
 private:
   bool thaw_ = false;
 
@@ -38,19 +50,6 @@ private:
   InstructionParser instruction_parser_;
   uint32_t pc_ = 0;
   std::unordered_map<uint32_t, uint32_t> memory_;
-
-public:
-  LoadStoreBuffer *lsb_;
-  ReorderBuffer *rob_;
-  ReservationStation *rs_;
-  RegisterFile *rf_;
-  Predictor *predictor_;
-  Memory();
-  void Init();
-  void RunPC();
-  void RunMemory();
-  void Copy(const Memory &);
-  uint32_t GetInstruction();
 };
 
 }

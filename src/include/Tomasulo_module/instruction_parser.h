@@ -31,13 +31,12 @@ struct Instruction {
 };
 
 class InstructionParser {
-private:
-  bool debug_mode_;
-
 public:
   InstructionParser();
   static uint32_t Extract(const uint32_t &, const int32_t &, const int32_t &);
   Instruction Decode(const uint32_t &, const uint32_t &);
+private:
+  bool debug_mode_;
 };
 
 }

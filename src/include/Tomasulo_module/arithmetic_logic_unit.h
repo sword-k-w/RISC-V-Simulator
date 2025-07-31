@@ -11,6 +11,12 @@ namespace sjtu {
 class ArithmeticLogicUnit {
   friend class ReservationStation;
   friend class ReorderBuffer;
+public:
+  ReorderBuffer *rob_;
+  ReservationStation *rs_;
+  LoadStoreBuffer *lsb_;
+  void Run();
+  void Copy(const ArithmeticLogicUnit &);
 private:
   bool predict_failed_ = false;
   bool is_zero_ = false;
@@ -20,13 +26,6 @@ private:
   uint32_t wireB_;
   uint32_t wireS_;
   InstructionType sel_;
-
-public:
-  ReorderBuffer *rob_;
-  ReservationStation *rs_;
-  LoadStoreBuffer *lsb_;
-  void Run();
-  void Copy(const ArithmeticLogicUnit &);
 };
 
 }

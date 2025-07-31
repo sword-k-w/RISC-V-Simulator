@@ -18,6 +18,18 @@ struct RoBEntry {
 class ReorderBuffer {
   friend class Memory;
   friend class ArithmeticLogicUnit;
+public:
+  ArithmeticLogicUnit *alu_;
+  Memory *mem_;
+  ReservationStation *rs_;
+  RegisterFile *rf_;
+  LoadStoreBuffer *lsb_;
+  Predictor *predictor_;
+  ReorderBuffer *other_;
+
+  RegisterFile *rf_print_; // for debug
+  bool Run();
+  void Copy(const ReorderBuffer &);
 private:
   bool predict_failed = false;
 
@@ -34,18 +46,6 @@ private:
   uint32_t head_ = 0;
   uint32_t tail_ = 0;
   RoBEntry entry_[32];
-public:
-  ArithmeticLogicUnit *alu_;
-  Memory *mem_;
-  ReservationStation *rs_;
-  RegisterFile *rf_;
-  LoadStoreBuffer *lsb_;
-  Predictor *predictor_;
-  ReorderBuffer *other_;
-
-  RegisterFile *rf_print_; // for debug
-  bool Run();
-  void Copy(const ReorderBuffer &);
 };
 
 }

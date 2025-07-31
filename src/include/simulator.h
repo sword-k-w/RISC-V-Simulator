@@ -14,6 +14,9 @@
 namespace sjtu {
 
 class Simulator {
+public:
+  void Init();
+  void Run();
 private:
   uint64_t clock_;
   ArithmeticLogicUnit alu_[2];
@@ -23,9 +26,6 @@ private:
   ReorderBuffer rob_[2];
   ReservationStation rs_[2];
   Predictor predictor_;
-public:
-  void Init();
-  void Run();
 };
 
 }

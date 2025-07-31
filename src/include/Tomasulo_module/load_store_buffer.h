@@ -20,6 +20,10 @@ class LoadStoreBuffer {
   friend class ArithmeticLogicUnit;
   friend class ReorderBuffer;
   friend class Memory;
+public:
+  Memory *mem_;
+  void Run();
+  void Copy(const LoadStoreBuffer &);
 private:
   bool predict_failed_ = false;
 
@@ -40,11 +44,6 @@ private:
   LoadStoreBufferEntry entry[32];
 
   void PassInstruction();
-
-public:
-  Memory *mem_;
-  void Run();
-  void Copy(const LoadStoreBuffer &);
 };
 
 }

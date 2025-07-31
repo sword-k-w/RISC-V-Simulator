@@ -11,11 +11,11 @@ namespace sjtu {
 class Predictor {
   friend class Memory;
   friend class ReorderBuffer;
-private:
-  int32_t state_ = 2;
 public:
   bool Predict() const;
   void Feedback(const bool &);
+private:
+  int32_t state_ = 2;
 };
 
 }

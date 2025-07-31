@@ -11,16 +11,16 @@ enum ArithmeticType {
 };
 
 class ArithmeticLogicUnit {
-private:
-  uint32_t wireA_;
-  uint32_t wireB_;
-  ArithmeticType sel_;
 public:
   ArithmeticLogicUnit();
   uint32_t Result() const;
   void SetWireA(const uint32_t &);
   void SetWireB(const uint32_t &);
   void SetSel(const ArithmeticType &);
+private:
+  uint32_t wireA_;
+  uint32_t wireB_;
+  ArithmeticType sel_;
 };
 
 }

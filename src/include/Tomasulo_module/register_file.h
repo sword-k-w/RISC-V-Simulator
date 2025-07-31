@@ -10,6 +10,13 @@ namespace sjtu {
 class RegisterFile {
   friend class Memory;
   friend class ReorderBuffer;
+public:
+  ReservationStation *rs_;
+  RegisterFile();
+  void Run();
+  void Copy(const RegisterFile &);
+  uint32_t Result() const;
+  void Print(std::ostream &) const;
 private:
   bool predict_failed_ = false;
 
@@ -24,13 +31,6 @@ private:
 
   uint32_t reg_[32];
   int32_t dependence_[32]; // -1 means no dependence
-public:
-  ReservationStation *rs_;
-  RegisterFile();
-  void Run();
-  void Copy(const RegisterFile &);
-  uint32_t Result() const;
-  void Print(std::ostream &) const;
 };
 
 }

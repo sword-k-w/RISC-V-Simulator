@@ -28,6 +28,11 @@ class ReservationStation {
   friend class Memory;
   friend class ArithmeticLogicUnit;
   friend class RegisterFile;
+public:
+  ArithmeticLogicUnit* alu_;
+  void CheckDependence(uint32_t &, int32_t &, const uint32_t &);
+  void Run();
+  void Copy(const ReservationStation &);
 private:
   bool predict_failed_ = false;
 
@@ -48,12 +53,6 @@ private:
   RoBEntry old_rob_entry_[32];
 
   ReservationStationEntry entry_[32];
-
-public:
-  ArithmeticLogicUnit* alu_;
-  void CheckDependence(uint32_t &, int32_t &, const uint32_t &);
-  void Run();
-  void Copy(const ReservationStation &);
 };
 
 }

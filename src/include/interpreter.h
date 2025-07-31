@@ -12,6 +12,9 @@
 namespace sjtu {
 
 class Interpreter {
+public:
+  Interpreter();
+  void Run();
 private:
   uint32_t pc_;
   Memory MEM_;
@@ -25,9 +28,6 @@ private:
   Selector selectorPC_;
   Selector selectorWB0_;
   Selector selectorWB1_;
-public:
-  Interpreter();
-  void Run();
 };
 
 }
