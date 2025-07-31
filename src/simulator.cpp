@@ -48,6 +48,7 @@ void Simulator::Run() {
       rf_[0].Run();
     } else if (rob_[0].Run()) {
       std::cerr << "Total Cycle Count = " << clock_ << '\n';
+      predictor_.Report();
       std::cout << rf_[0].Result() << '\n';
       exit(0);
     }

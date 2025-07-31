@@ -15,7 +15,7 @@ class LoadStoreBuffer;
 
 class Memory;
 
-class Predictor;
+class SaturatingPredictor;
 
 }
 

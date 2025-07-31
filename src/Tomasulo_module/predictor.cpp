@@ -2,18 +2,33 @@
 
 namespace sjtu {
 
-bool Predictor::Predict() const {
-  return state_ < 3;
+SaturatingPredictor::SaturatingPredictor() {
+  for (int32_t i = 0; i < 4096; ++i) {
+    state_[i] = 2;
+  }
 }
 
-void Predictor::Feedback(const bool &result) {
-  if (result) {
-    --state_;
-    state_ = std::max(state_, 1);
-  } else {
-    ++state_;
-    state_ = std::min(state_, 4);
+bool SaturatingPredictor::Predict(const uint16_t &address_hash_val) const {
+  return state_[address_hash_val] < 3;
+}
+
+void SaturatingPredictor::Feedback(const uint16_t &address_hash_val, const bool &result, const bool &predict) {
+  ++total_cnt_;
+  if (result == predict) {
+    ++success_cnt_;
   }
+  if (result) {
+    --state_[address_hash_val];
+    state_[address_hash_val] = std::max(state_[address_hash_val], 1);
+  } else {
+    ++state_[address_hash_val];
+    state_[address_hash_val] = std::min(state_[address_hash_val], 4);
+  }
+}
+
+void SaturatingPredictor::Report() const {
+  std::cerr << "Predict " << total_cnt_ << " times and success " << success_cnt_ << '\n';
+  std::cerr << "Predict Accuracy = " << std::fixed << std::setprecision(2) << 100.0 * success_cnt_ / total_cnt_ << "%\n";
 }
 
 }

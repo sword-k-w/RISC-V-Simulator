@@ -58,7 +58,7 @@ auto ReorderBuffer::Run() -> bool {
       rf_->commit_reg_id_ = entry_[head_].instruction.rd;
       rf_->commit_value_ = entry_[head_].value;
     } else if (entry_[head_].instruction.format_type == B) {
-      predictor_->Feedback(entry_[head_].value);
+      predictor_->Feedback(entry_[head_].instruction.address_hash_val, entry_[head_].value, entry_[head_].instruction.predict);
       if (entry_[head_].value != entry_[head_].instruction.predict) {
         alu_->predict_failed_ = true;
         rs_->predict_failed_ = true;

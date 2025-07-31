@@ -25,6 +25,7 @@ struct Instruction {
   uint32_t rs1;
   uint32_t rs2;
   int32_t immediate;
+  uint16_t address_hash_val;
   bool predict;
   void Print(std::ostream &) const;
   void ExtendSign(int32_t bit);

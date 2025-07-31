@@ -25,7 +25,7 @@ private:
   RegisterFile rf_[2];
   ReorderBuffer rob_[2];
   ReservationStation rs_[2];
-  Predictor predictor_;
+  SaturatingPredictor predictor_;
 };
 
 }

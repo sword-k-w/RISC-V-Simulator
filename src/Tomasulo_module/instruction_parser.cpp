@@ -409,6 +409,7 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
     default:
       assert(0);
   }
+  res.address_hash_val = address & 4095;
   return res;
 }
 

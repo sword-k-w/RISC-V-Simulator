@@ -17,7 +17,7 @@ public:
   ReorderBuffer *rob_;
   ReservationStation *rs_;
   RegisterFile *rf_;
-  Predictor *predictor_;
+  SaturatingPredictor *predictor_;
   void Init();
   void RunPC();
   void RunMemory();
