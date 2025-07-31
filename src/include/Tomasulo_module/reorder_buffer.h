@@ -24,7 +24,7 @@ public:
   ReservationStation *rs_;
   RegisterFile *rf_;
   LoadStoreBuffer *lsb_;
-  SaturatingPredictor *predictor_;
+  Predictor *predictor_;
   ReorderBuffer *other_;
 
   auto Run() -> bool;

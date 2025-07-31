@@ -4,13 +4,20 @@
 
 namespace sjtu {
 
-void Simulator::Init() {
+void Simulator::Init(int32_t argc, char **argv) {
+  if (argc == 2 && strcmp(argv[1], "saturating") == 0) {
+    predictor_ = new SaturatingPredictor();
+  } else if (argc == 2 && strcmp(argv[1], "two_level_adaptive") == 0) {
+    predictor_ = new TwoLevelAdaptivePredictor();
+  } else {
+    predictor_ = new TwoLevelAdaptivePredictor();
+  }
   mem_[0].Init();
   alu_[0].lsb_ = &lsb_[1];
   alu_[0].rob_ = &rob_[1];
   alu_[0].rs_ = &rs_[1];
   lsb_[0].mem_ = &mem_[1];
-  mem_[0].predictor_ = &predictor_;
+  mem_[0].predictor_ = predictor_;
   mem_[0].rf_ = &rf_[1];
   mem_[0].rob_ = &rob_[1];
   mem_[0].rs_ = &rs_[1];
@@ -19,7 +26,7 @@ void Simulator::Init() {
   rob_[0].alu_ = &alu_[1];
   rob_[0].lsb_ = &lsb_[1];
   rob_[0].mem_ = &mem_[1];
-  rob_[0].predictor_ = &predictor_;
+  rob_[0].predictor_ = predictor_;
   rob_[0].rf_ = &rf_[1];
   rob_[0].rs_ = &rs_[1];
   rob_[0].other_ = &rob_[1];
@@ -48,8 +55,9 @@ void Simulator::Run() {
       rf_[0].Run();
     } else if (rob_[0].Run()) {
       std::cerr << "Total Cycle Count = " << clock_ << '\n';
-      predictor_.Report();
+      predictor_->Report();
       std::cout << rf_[0].Result() << '\n';
+      delete predictor_;
       exit(0);
     }
   }
