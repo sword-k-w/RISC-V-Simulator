@@ -28,6 +28,13 @@ auto GlobalPredictor::Predict(const uint16_t &address_hash_val) -> uint8_t const
   return state_ < 3;
 }
 
+void LocalPredictor::Report() const {
+  std::cerr << "Predict Information:\n";
+  std::cerr << "Curren predictor is local predictor.\n";
+  std::cerr << "Predict " << total_cnt_ << " times and success " << success_cnt_ << '\n';
+  std::cerr << "Predict Accuracy = " << std::fixed << std::setprecision(2) << 100.0 * success_cnt_ / total_cnt_ << "%\n";
+}
+
 void GlobalPredictor::Feedback(const uint16_t &address_hash_val, const bool &result, const uint8_t &predict) {
   ++total_cnt_;
   if (result == (predict & 1)) {
