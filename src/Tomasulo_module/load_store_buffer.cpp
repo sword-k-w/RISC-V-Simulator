@@ -20,7 +20,7 @@ void LoadStoreBuffer::PassInstruction() {
     head_ = (head_ + 1) % 32;
   } else if (head_ != tail_) {
     if (entry[head_].ready) {
-      waiting_cycle_ = 2;
+      waiting_cycle_ = 1;
     }
   }
 }
