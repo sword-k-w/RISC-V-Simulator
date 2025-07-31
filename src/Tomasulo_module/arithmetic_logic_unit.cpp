@@ -26,10 +26,10 @@ void ArithmeticLogicUnit::Run() {
       case Jalr:
       case Auipc:
       case Lui:
-        res = static_cast<uint32_t>(static_cast<int>(wireA_) + static_cast<int>(wireB_));
+        res = static_cast<uint32_t>(static_cast<int32_t>(wireA_) + static_cast<int32_t>(wireB_));
       break;
       case Sub:
-        res = static_cast<uint32_t>(static_cast<int>(wireA_) - static_cast<int>(wireB_));
+        res = static_cast<uint32_t>(static_cast<int32_t>(wireA_) - static_cast<int32_t>(wireB_));
       break;
       case And:
       case Andi:
@@ -53,12 +53,12 @@ void ArithmeticLogicUnit::Run() {
       break;
       case Sra:
       case Srai:
-        res = static_cast<uint32_t>(static_cast<int>(wireA_) >> wireB_);
+        res = static_cast<uint32_t>(static_cast<int32_t>(wireA_) >> wireB_);
       break;
       case Slt:
       case Slti:
       case Blt:
-        res = static_cast<int>(wireA_) < static_cast<int>(wireB_) ? 1u : 0u;
+        res = static_cast<int32_t>(wireA_) < static_cast<int32_t>(wireB_) ? 1u : 0u;
       break;
       case Sltu:
       case Sltiu:
@@ -69,7 +69,7 @@ void ArithmeticLogicUnit::Run() {
         res = wireA_ == wireB_ ? 1u : 0u;
       break;
       case Bge:
-        res = static_cast<int>(wireA_) >= static_cast<int>(wireB_) ? 1u : 0u;
+        res = static_cast<int32_t>(wireA_) >= static_cast<int32_t>(wireB_) ? 1u : 0u;
       break;
       case Bgeu:
         res = wireA_ >= wireB_ ? 1u : 0u;

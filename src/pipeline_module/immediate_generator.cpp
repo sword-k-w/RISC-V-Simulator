@@ -2,9 +2,9 @@
 
 namespace sjtu {
 
-int ExtendSign(uint32_t x, int bit) {
+int32_t ExtendSign(uint32_t x, int32_t bit) {
   if (x >> bit & 1) {
-    for (int i = bit + 1; i < 32; ++i) {
+    for (int32_t i = bit + 1; i < 32; ++i) {
       x |= 1u << i;
     }
   }
@@ -13,7 +13,7 @@ int ExtendSign(uint32_t x, int bit) {
 
 ImmediateGenerator::ImmediateGenerator() : code_(0u), sel_(R) {}
 
-int ImmediateGenerator::Result() const {
+int32_t ImmediateGenerator::Result() const {
   switch (sel_) {
     case R:
       return 0u;

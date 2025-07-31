@@ -27,14 +27,14 @@ private:
   bool whether_new_instruction_ = false;
   Instruction new_instruction_;
 
-  int alu_broadcast_dest_ = -1;
+  int32_t alu_broadcast_dest_ = -1;
   uint32_t alu_broadcast_address_;
 
-  int rob_broadcast_dest_ = -1;
+  int32_t rob_broadcast_dest_ = -1;
   uint32_t rob_broadcast_address_;
   uint32_t rob_broadcast_value_;
 
-  int waiting_cycle_ = -1;
+  int32_t waiting_cycle_ = -1;
   uint32_t head_ = 0;
   uint32_t tail_ = 0;
   LoadStoreBufferEntry entry[32];

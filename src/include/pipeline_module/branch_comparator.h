@@ -7,8 +7,8 @@ namespace sjtu {
 
 class BranchComparator {
 private:
-  unsigned int wire0_;
-  unsigned int wire1_;
+  unsigned int32_t wire0_;
+  unsigned int32_t wire1_;
   bool is_unsigned_;
 public:
   BranchComparator();

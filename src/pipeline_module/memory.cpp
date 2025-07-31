@@ -15,7 +15,7 @@ Memory::Memory() : address_(0u), input_(0u), is_read_(true), pc_(0u), is_unsigne
   while (std::cin >> tmp) {
     if (tmp[0] == '@') {
       cur_address = 0;
-      for (int i = 1; i <= 8; ++i) {
+      for (int32_t i = 1; i <= 8; ++i) {
         cur_address = cur_address * 16 + HexDecoder(tmp[i]);
       }
     } else {
@@ -34,12 +34,12 @@ uint32_t Memory::DataResult() {
         if (is_unsigned_) {
           return memory_[address_] | (memory_[address_ + 1] << 8);
         }
-        return static_cast<int>(memory_[address_] | (memory_[address_ + 1] << 8));
+        return static_cast<int32_t>(memory_[address_] | (memory_[address_ + 1] << 8));
       case Byte:
         if (is_unsigned_) {
           return memory_[address_];
         }
-        return static_cast<int>(memory_[address_]);
+        return static_cast<int32_t>(memory_[address_]);
     }
   }
   switch (type_) {

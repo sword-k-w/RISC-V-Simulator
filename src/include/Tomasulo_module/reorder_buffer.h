@@ -24,11 +24,11 @@ private:
   bool whether_new_instruction_ = false;
   Instruction new_instruction_;
 
-  int alu_broadcast_dest_ = -1;
+  int32_t alu_broadcast_dest_ = -1;
   uint32_t alu_broadcast_val_;
   uint32_t alu_broadcast_address_;
 
-  int lsb_broadcast_dest_ = -1;
+  int32_t lsb_broadcast_dest_ = -1;
   uint32_t lsb_broadcast_val_;
 
   uint32_t head_ = 0;

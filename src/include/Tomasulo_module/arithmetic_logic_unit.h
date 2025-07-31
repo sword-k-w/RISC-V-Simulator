@@ -15,7 +15,7 @@ private:
   bool predict_failed_ = false;
   bool is_zero_ = false;
 
-  int dest_ = -1;
+  int32_t dest_ = -1;
   uint32_t wireA_;
   uint32_t wireB_;
   uint32_t wireS_;

@@ -120,7 +120,7 @@ void Interpreter::Run() {
     selectorWB0_.SetWire0(MEM_.DataResult());
 
     // selectorWB
-    int WBsel = 1;
+    int32_t WBsel = 1;
     if (instruction.type == IM) {
       WBsel = 0;
     } else if (instruction.type == IC || instruction.type == J) {

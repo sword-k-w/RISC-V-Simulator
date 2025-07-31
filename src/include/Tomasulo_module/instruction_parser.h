@@ -24,10 +24,10 @@ struct Instruction {
   uint32_t rd;
   uint32_t rs1;
   uint32_t rs2;
-  int immediate;
+  int32_t immediate;
   bool predict;
   void Print(std::ostream &) const;
-  void ExtendSign(int bit);
+  void ExtendSign(int32_t bit);
 };
 
 class InstructionParser {
@@ -36,7 +36,7 @@ private:
 
 public:
   InstructionParser();
-  static uint32_t Extract(const uint32_t &, const int &, const int &);
+  static uint32_t Extract(const uint32_t &, const int32_t &, const int32_t &);
   Instruction Decode(const uint32_t &, const uint32_t &);
 };
 

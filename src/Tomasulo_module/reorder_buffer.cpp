@@ -7,7 +7,7 @@
 
 namespace sjtu {
 
-// int cnt = 0;
+// int32_t cnt = 0;
 
 bool ReorderBuffer::Run() {
   alu_->predict_failed_ = false;
@@ -84,7 +84,7 @@ bool ReorderBuffer::Run() {
         rf_->new_dependence_ = 0;
         memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
         // std::cerr << "<RoB>\n";
-        // for (int i = head_; i != tail_; i = (i + 1) % 32) {
+        // for (int32_t i = head_; i != tail_; i = (i + 1) % 32) {
         //   std::cerr << i << " " << entry_[i].ready << " " << entry_[i].value << " ";
         //   entry_[i].instruction.Print(std::cerr);
         //   std::cerr << '\n';
@@ -124,7 +124,7 @@ bool ReorderBuffer::Run() {
   memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
   rf_->new_dependence_ = tail_;
   // std::cerr << "<RoB>\n";
-  // for (int i = head_; i != tail_; i = (i + 1) % 32) {
+  // for (int32_t i = head_; i != tail_; i = (i + 1) % 32) {
   //   std::cerr << i << " " << entry_[i].ready << " " << entry_[i].value << " ";
   //   entry_[i].instruction.Print(std::cerr);
   //   std::cerr << '\n';

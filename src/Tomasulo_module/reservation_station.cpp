@@ -20,7 +20,7 @@ void ReservationStation::Run() {
   alu_->dest_ = -1;
   alu_->is_zero_ = false;
   if (predict_failed_) {
-    for (int i = 0; i < 32; ++i) {
+    for (int32_t i = 0; i < 32; ++i) {
       entry_[i].busy = false;
       old_dependence_[i] = -1;
     }
@@ -73,7 +73,7 @@ void ReservationStation::Run() {
   }
 
   if (alu_broadcast_dest_ != -1) {
-    for (int i = 0; i < 32; ++i) {
+    for (int32_t i = 0; i < 32; ++i) {
       if (entry_[i].depend1 == alu_broadcast_dest_) {
         entry_[i].depend1 = -1;
         entry_[i].val1 = alu_broadcast_val_;
@@ -86,7 +86,7 @@ void ReservationStation::Run() {
   }
 
   if (lsb_broadcast_dest_ != -1) {
-    for (int i = 0; i < 32; ++i) {
+    for (int32_t i = 0; i < 32; ++i) {
       if (entry_[i].depend1 == lsb_broadcast_dest_) {
         entry_[i].depend1 = -1;
         entry_[i].val1 = lsb_broadcast_val_;
@@ -99,7 +99,7 @@ void ReservationStation::Run() {
   }
 
 
-  for (int i = 0; i < 32; ++i) {
+  for (int32_t i = 0; i < 32; ++i) {
     if (entry_[i].busy && entry_[i].depend1 == -1 && entry_[i].depend2 == -1) {
       entry_[i].busy = false;
       if (entry_[i].type == Sb || entry_[i].type == Sh || entry_[i].type == Sw) {
@@ -119,7 +119,7 @@ void ReservationStation::Run() {
     }
   }
   // std::cerr << "<RS>\n";
-  // for (int i = 0; i < 32; ++i) {
+  // for (int32_t i = 0; i < 32; ++i) {
   //   if (entry_[i].busy) {
   //     std::cerr << i << " ";
   //     switch (entry_[i].type) {

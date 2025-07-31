@@ -3,7 +3,7 @@
 namespace sjtu {
 
 RegisterFile::RegisterFile() : read_index1_(0u), read_index2_(0u), write_index_(0u), input_(0u),write_enable_(false) {
-  for (int i = 0; i < 32; ++i) {
+  for (int32_t i = 0; i < 32; ++i) {
     register_[i] = 0u;
   }
 }
@@ -40,7 +40,7 @@ uint32_t RegisterFile::GetReturnValue() const {
 }
 
 void RegisterFile::Print() const {
-  for (int i = 12; i < 16; ++i) {
+  for (int32_t i = 12; i < 16; ++i) {
     std::cerr << "[x" << i << " = " << register_[i] << "]\n";
   }
 }

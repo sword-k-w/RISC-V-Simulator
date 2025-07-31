@@ -32,9 +32,9 @@ std::mt19937 rnd(time(nullptr));
 void Simulator::Run() {
   ++clock_;
 
-  int p[7] = {0, 1, 2, 3, 4, 5, 6};
+  int32_t p[7] = {0, 1, 2, 3, 4, 5, 6};
   std::shuffle(p, p + 7, rnd);
-  for (int i = 0; i < 7; ++i) {
+  for (int32_t i = 0; i < 7; ++i) {
     if (p[i] == 0) {
       alu_[0].Run();
     } else if (p[i] == 1) {

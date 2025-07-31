@@ -1,6 +1,6 @@
 #include "simulator.h"
 
-int main() {
+int32_t main() {
 #ifdef LOCAL
   freopen("input.txt", "r", stdin);
   freopen("log.txt", "w", stderr);

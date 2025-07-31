@@ -7,9 +7,9 @@ ArithmeticLogicUnit::ArithmeticLogicUnit() : wireA_(0u), wireB_(0u), sel_(And) {
 uint32_t ArithmeticLogicUnit::Result() const {
   switch (sel_) {
     case Add:
-      return static_cast<uint32_t>(static_cast<int>(wireA_) + static_cast<int>(wireB_));
+      return static_cast<uint32_t>(static_cast<int32_t>(wireA_) + static_cast<int32_t>(wireB_));
     case Sub:
-      return static_cast<uint32_t>(static_cast<int>(wireA_) - static_cast<int>(wireB_));
+      return static_cast<uint32_t>(static_cast<int32_t>(wireA_) - static_cast<int32_t>(wireB_));
     case And:
       return wireA_ & wireB_;
     case Or:
@@ -21,9 +21,9 @@ uint32_t ArithmeticLogicUnit::Result() const {
     case Srl:
       return wireA_ >> wireB_;
     case Sra:
-      return static_cast<uint32_t>(static_cast<int>(wireA_) >> wireB_);
+      return static_cast<uint32_t>(static_cast<int32_t>(wireA_) >> wireB_);
     case Slt:
-      return static_cast<int>(wireA_) < static_cast<int>(wireB_) ? 1u : 0u;
+      return static_cast<int32_t>(wireA_) < static_cast<int32_t>(wireB_) ? 1u : 0u;
     case Sltu:
       return wireA_ < wireB_ ? 1u : 0u;
   }

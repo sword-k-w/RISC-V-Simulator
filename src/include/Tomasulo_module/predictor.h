@@ -12,7 +12,7 @@ class Predictor {
   friend class Memory;
   friend class ReorderBuffer;
 private:
-  int state_ = 2;
+  int32_t state_ = 2;
 public:
   bool Predict() const;
   void Feedback(const bool &);

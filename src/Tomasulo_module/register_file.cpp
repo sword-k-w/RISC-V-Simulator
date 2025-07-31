@@ -11,7 +11,7 @@ RegisterFile::RegisterFile() {
 
 void RegisterFile::Run() {
   if (predict_failed_) {
-    for (int i = 0; i < 32; ++i) {
+    for (int32_t i = 0; i < 32; ++i) {
       dependence_[i] = -1;
     }
     memcpy(rs_->old_dependence_, dependence_, sizeof(dependence_));
@@ -47,7 +47,7 @@ uint32_t RegisterFile::Result() const {
 }
 
 void RegisterFile::Print(std::ostream &os) const {
-  for (int i = 12; i < 16; ++i) {
+  for (int32_t i = 12; i < 16; ++i) {
     os << "[x" << i << " = " << reg_[i] << " depend on " << dependence_[i] << "]\n";
   }
 }

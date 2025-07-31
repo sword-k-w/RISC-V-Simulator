@@ -8,7 +8,7 @@ std::pair<bool, bool> BranchComparator::Result() const {
   if (is_unsigned_) {
     return std::make_pair(wire0_ == wire1_, wire0_ < wire1_);
   }
-  return std::make_pair(wire0_ == wire1_, static_cast<int>(wire0_) < static_cast<int>(wire1_));
+  return std::make_pair(wire0_ == wire1_, static_cast<int32_t>(wire0_) < static_cast<int32_t>(wire1_));
 }
 
 void BranchComparator::SetWire0(const uint32_t &input) {

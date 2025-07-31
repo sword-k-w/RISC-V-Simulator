@@ -169,9 +169,9 @@ void Instruction::Print() const {
   }
 }
 
-void Instruction::ExtendSign(int bit) {
+void Instruction::ExtendSign(int32_t bit) {
   if (immediate >> bit & 1) {
-    for (int i = bit + 1; i < 32; ++i) {
+    for (int32_t i = bit + 1; i < 32; ++i) {
       immediate |= 1u << i;
     }
   }
@@ -187,7 +187,7 @@ InstructionParser::InstructionParser() {
 }
 
 // left open, right closed
-uint32_t InstructionParser::Extract(const uint32_t &code, const int &l, const int &r) {
+uint32_t InstructionParser::Extract(const uint32_t &code, const int32_t &l, const int32_t &r) {
   return r == 32 ? code >> l : (code & ((1u << r) - 1u)) >> l;
 }
 
