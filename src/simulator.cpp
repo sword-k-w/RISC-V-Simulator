@@ -23,7 +23,6 @@ void Simulator::Init() {
   rob_[0].rf_ = &rf_[1];
   rob_[0].rs_ = &rs_[1];
   rob_[0].other_ = &rob_[1];
-  rob_[0].rf_print_ = &rf_[0];
   rs_[0].alu_ = &alu_[1];
 }
 

@@ -7,9 +7,7 @@
 
 namespace sjtu {
 
-// int32_t cnt = 0;
-
-bool ReorderBuffer::Run() {
+auto ReorderBuffer::Run() -> bool {
   alu_->predict_failed_ = false;
   other_->predict_failed = false;
   mem_->thaw_ = false;
@@ -69,11 +67,6 @@ bool ReorderBuffer::Run() {
         mem_->predict_failed_ = true;
         other_->predict_failed = true;
         mem_->new_pc_ = entry_[head_].instruction.immediate;
-        // ++cnt;
-        // std::cerr << "@commit: cnt = " << cnt << " ";
-        // entry_[head_].instruction.Print(std::cerr);
-        // std::cerr << '\n';
-        // rf_print_->Print(std::cerr);
         head_ = 0;
         tail_ = 0;
         mem_->las_rob_head_ = 0;
@@ -83,13 +76,6 @@ bool ReorderBuffer::Run() {
         rs_->las_rob_haed_ = 0;
         rf_->new_dependence_ = 0;
         memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
-        // std::cerr << "<RoB>\n";
-        // for (int32_t i = head_; i != tail_; i = (i + 1) % 32) {
-        //   std::cerr << i << " " << entry_[i].ready << " " << entry_[i].value << " ";
-        //   entry_[i].instruction.Print(std::cerr);
-        //   std::cerr << '\n';
-        // }
-        // std::cerr << '\n';
         return false;
       }
     } else if (entry_[head_].instruction.format_type == S) {
@@ -102,11 +88,6 @@ bool ReorderBuffer::Run() {
       rf_->commit_reg_id_ = entry_[head_].instruction.rd;
       rf_->commit_value_ = entry_[head_].value;
     }
-    // ++cnt;
-    // std::cerr << "@commit: cnt = " << cnt << " ";
-    // entry_[head_].instruction.Print(std::cerr);
-    // std::cerr << '\n';
-    // rf_print_->Print(std::cerr);
     head_ = (head_ + 1) % 32;
   }
 
@@ -123,14 +104,6 @@ bool ReorderBuffer::Run() {
   rs_->las_rob_tail_ = tail_;
   memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
   rf_->new_dependence_ = tail_;
-  // std::cerr << "<RoB>\n";
-  // for (int32_t i = head_; i != tail_; i = (i + 1) % 32) {
-  //   std::cerr << i << " " << entry_[i].ready << " " << entry_[i].value << " ";
-  //   entry_[i].instruction.Print(std::cerr);
-  //   std::cerr << '\n';
-  // }
-  // std::cerr << '\n';
-  //   rf_print_->Print(std::cerr);
   return false;
 }
 

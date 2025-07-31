@@ -42,7 +42,7 @@ void RegisterFile::Copy(const RegisterFile &other) {
   commit_value_ = other.commit_value_;
 }
 
-uint32_t RegisterFile::Result() const {
+auto RegisterFile::Result() const -> uint32_t {
   return reg_[10] & 255;
 }
 
@@ -51,6 +51,5 @@ void RegisterFile::Print(std::ostream &os) const {
     os << "[x" << i << " = " << reg_[i] << " depend on " << dependence_[i] << "]\n";
   }
 }
-
 
 }

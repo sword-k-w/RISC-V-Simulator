@@ -15,8 +15,6 @@ uint32_t HexDecoder(char c) {
   return c - 'A' + 10;
 }
 
-Memory::Memory() {}
-
 void Memory::Init() {
   std::string tmp;
   uint32_t cur_address = 0u;
@@ -33,7 +31,6 @@ void Memory::Init() {
   }
 }
 
-
 void Memory::RunPC() {
   rob_->whether_new_instruction_ = false;
   rs_->whether_new_instruction_ = false;
@@ -41,7 +38,6 @@ void Memory::RunPC() {
   lsb_->whether_new_instruction_ = false;
 
   if (thaw_) {
-    assert(!predict_failed_);
     pc_ = new_pc_;
     jalr_frozen_ = false;
   }
@@ -56,9 +52,6 @@ void Memory::RunPC() {
   }
 
   Instruction cur_instruction = instruction_parser_.Decode(pc_, GetInstruction());
-  // std::cerr << "@issue form IMEM: ";
-  // cur_instruction.Print(std::cerr);
-  // std::cerr << '\n';
 
   if ((cur_instruction.format_type == IM || cur_instruction.format_type == S)
     && ((las_lsb_tail_ + 1) % 32 == las_lsb_head_ || (las_lsb_tail_ + 2) % 32 == las_lsb_head_)) {

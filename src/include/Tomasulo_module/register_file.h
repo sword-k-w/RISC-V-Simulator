@@ -15,7 +15,7 @@ public:
   RegisterFile();
   void Run();
   void Copy(const RegisterFile &);
-  uint32_t Result() const;
+  auto Result() const -> uint32_t;
   void Print(std::ostream &) const;
 private:
   bool predict_failed_ = false;

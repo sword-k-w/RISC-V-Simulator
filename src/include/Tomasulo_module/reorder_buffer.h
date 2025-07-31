@@ -27,8 +27,7 @@ public:
   Predictor *predictor_;
   ReorderBuffer *other_;
 
-  RegisterFile *rf_print_; // for debug
-  bool Run();
+  auto Run() -> bool;
   void Copy(const ReorderBuffer &);
 private:
   bool predict_failed = false;

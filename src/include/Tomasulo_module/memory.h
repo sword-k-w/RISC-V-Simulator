@@ -18,7 +18,6 @@ public:
   ReservationStation *rs_;
   RegisterFile *rf_;
   Predictor *predictor_;
-  Memory();
   void Init();
   void RunPC();
   void RunMemory();

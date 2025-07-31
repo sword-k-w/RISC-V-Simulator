@@ -7,9 +7,7 @@ namespace sjtu {
 void LoadStoreBuffer::PassInstruction() {
   if (waiting_cycle_ > 0) {
     --waiting_cycle_;
-    assert(head_ != tail_ && entry[head_].ready);
   } else if (waiting_cycle_ == 0) {
-    assert(head_ != tail_ && entry[head_].ready);
     mem_->whether_commit_ = true;
     mem_->commit_type_ = entry[head_].instruction.type;
     mem_->commit_address_ = entry[head_].address;
@@ -21,7 +19,6 @@ void LoadStoreBuffer::PassInstruction() {
     waiting_cycle_ = -1;
     head_ = (head_ + 1) % 32;
   } else if (head_ != tail_) {
-    assert(waiting_cycle_ == -1);
     if (entry[head_].ready) {
       waiting_cycle_ = 2;
     }
@@ -49,7 +46,6 @@ void LoadStoreBuffer::Run() {
   if (alu_broadcast_dest_ != -1) {
     for (int i = head_; i != tail_; i = (i + 1) % 32) {
       if (!entry[i].ready && entry[i].dest == alu_broadcast_dest_) {
-        assert(entry[i].instruction.format_type == IM);
         entry[i].ready = true;
         entry[i].address = alu_broadcast_address_;
         break;
@@ -60,7 +56,6 @@ void LoadStoreBuffer::Run() {
   if (rob_broadcast_dest_ != -1) {
     for (int i = head_; i != tail_; i = (i + 1) % 32) {
       if (!entry[i].ready && entry[i].dest == rob_broadcast_dest_) {
-        assert(entry[i].instruction.format_type == S);
         entry[i].ready = true;
         entry[i].address = rob_broadcast_address_;
         entry[i].value = rob_broadcast_value_;
@@ -69,7 +64,6 @@ void LoadStoreBuffer::Run() {
   }
 
   if (whether_new_instruction_) {
-    assert((tail_ + 1) % 32 != head_);
     entry[tail_].instruction = new_instruction_;
     entry[tail_].ready = false;
     entry[tail_].dest = las_rob_tail_;
