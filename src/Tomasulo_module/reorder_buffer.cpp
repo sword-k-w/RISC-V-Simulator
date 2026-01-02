@@ -66,14 +66,6 @@ auto ReorderBuffer::Run() -> bool {
         mem_->predict_failed_ = true;
         other_->predict_failed = true;
         mem_->new_pc_ = entry_[head_].instruction.immediate;
-        head_ = 0;
-        tail_ = 0;
-        mem_->las_rob_head_ = 0;
-        mem_->las_rob_tail_ = 0;
-        lsb_->las_rob_tail_ = 0;
-        rs_->las_rob_tail_ = 0;
-        rf_->new_dependence_ = 0;
-        memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
         return false;
       }
     } else if (entry_[head_].instruction.format_type == S) {
