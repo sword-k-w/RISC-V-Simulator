@@ -22,7 +22,6 @@ void ReservationStation::Run() {
   if (predict_failed_) {
     for (int32_t i = 0; i < 32; ++i) {
       entry_[i].busy = false;
-      old_dependence_[i] = -1;
     }
     return;
   }
