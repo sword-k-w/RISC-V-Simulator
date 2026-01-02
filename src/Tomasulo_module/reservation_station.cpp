@@ -36,7 +36,6 @@ void ReservationStation::Run() {
     }
     entry_[index].busy = true;
     entry_[index].type = new_instruction_.type;
-    entry_[index].dest = las_rob_tail_;
     if (new_instruction_.format_type == IC) {
       entry_[index].immediate_S = new_instruction_.rs2;
       entry_[index].depend2 = -1;
@@ -103,7 +102,7 @@ void ReservationStation::Run() {
       alu_->is_zero_ = entry_[i].is_zero;
       alu_->wireA_ = entry_[i].val1;
       alu_->sel_ = entry_[i].type;
-      alu_->dest_ = entry_[i].dest;
+      alu_->dest_ = i;
       break;
     }
   }

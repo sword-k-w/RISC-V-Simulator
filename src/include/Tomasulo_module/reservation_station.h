@@ -17,7 +17,6 @@ struct ReservationStationEntry {
   uint32_t val2;
   int32_t depend1{-1};
   int32_t depend2{-1};
-  uint32_t dest;
   int32_t immediate_S;
   bool is_zero = false;
 };
