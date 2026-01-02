@@ -36,7 +36,6 @@ public:
 private:
   bool predict_failed_ = false;
 
-  uint32_t las_rob_haed_;
   uint32_t las_rob_tail_;
   bool whether_new_instruction_ = false;
   Instruction new_instruction_;

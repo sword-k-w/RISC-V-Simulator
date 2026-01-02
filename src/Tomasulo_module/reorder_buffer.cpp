@@ -26,7 +26,6 @@ auto ReorderBuffer::Run() -> bool {
     mem_->las_rob_tail_ = 0;
     lsb_->las_rob_tail_ = 0;
     rs_->las_rob_tail_ = 0;
-    rs_->las_rob_haed_ = 0;
     rf_->new_dependence_ = 0;
     memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
     return false;
@@ -73,7 +72,6 @@ auto ReorderBuffer::Run() -> bool {
         mem_->las_rob_tail_ = 0;
         lsb_->las_rob_tail_ = 0;
         rs_->las_rob_tail_ = 0;
-        rs_->las_rob_haed_ = 0;
         rf_->new_dependence_ = 0;
         memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
         return false;
@@ -100,7 +98,6 @@ auto ReorderBuffer::Run() -> bool {
   mem_->las_rob_head_ = head_;
   mem_->las_rob_tail_ = tail_;
   lsb_->las_rob_tail_ = tail_;
-  rs_->las_rob_haed_ = head_;
   rs_->las_rob_tail_ = tail_;
   memcpy(rs_->old_rob_entry_, entry_, sizeof(entry_));
   rf_->new_dependence_ = tail_;

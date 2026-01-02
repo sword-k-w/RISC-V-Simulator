@@ -54,7 +54,7 @@ void Memory::RunPC() {
   Instruction cur_instruction = instruction_parser_.Decode(pc_, GetInstruction());
 
   if ((cur_instruction.format_type == IM || cur_instruction.format_type == S)
-    && ((las_lsb_tail_ + 1) % 32 == las_lsb_head_ || (las_lsb_tail_ + 2) % 32 == las_lsb_head_)) {
+    && (las_lsb_tail_ + 2) % 32 == las_lsb_head_) {
     return;
   }
 

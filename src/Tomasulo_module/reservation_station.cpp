@@ -28,13 +28,7 @@ void ReservationStation::Run() {
   }
 
   if (whether_new_instruction_) {
-    uint32_t index = 0;
-    while (index < 32) {
-      if (!entry_[index].busy) {
-        break;
-      }
-      ++index;
-    }
+    uint32_t index = las_rob_tail_;
     entry_[index].is_zero = false;
     if (new_instruction_.rd == 0) {
       if (new_instruction_.format_type == J || new_instruction_.format_type == IC) {
