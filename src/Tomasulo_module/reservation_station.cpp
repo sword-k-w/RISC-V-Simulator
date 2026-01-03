@@ -60,29 +60,20 @@ void ReservationStation::Run() {
     }
   }
 
-  if (alu_broadcast_dest_ != -1) {
-    for (int32_t i = 0; i < 32; ++i) {
-      if (entry_[i].depend1 == alu_broadcast_dest_) {
-        entry_[i].depend1 = -1;
-        entry_[i].val1 = alu_broadcast_val_;
-      }
-      if (entry_[i].depend2 == alu_broadcast_dest_) {
-        entry_[i].depend2 = -1;
-        entry_[i].val2 = alu_broadcast_val_;
-      }
+  for (int32_t i = 0; i < 32; ++i) {
+    if (alu_broadcast_dest_ != -1 && entry_[i].depend1 == alu_broadcast_dest_) {
+      entry_[i].depend1 = -1;
+      entry_[i].val1 = alu_broadcast_val_;
+    } else if (lsb_broadcast_dest_ != -1 && entry_[i].depend1 == lsb_broadcast_dest_) {
+      entry_[i].depend1 = -1;
+      entry_[i].val1 = lsb_broadcast_val_;
     }
-  }
-
-  if (lsb_broadcast_dest_ != -1) {
-    for (int32_t i = 0; i < 32; ++i) {
-      if (entry_[i].depend1 == lsb_broadcast_dest_) {
-        entry_[i].depend1 = -1;
-        entry_[i].val1 = lsb_broadcast_val_;
-      }
-      if (entry_[i].depend2 == lsb_broadcast_dest_) {
-        entry_[i].depend2 = -1;
-        entry_[i].val2 = lsb_broadcast_val_;
-      }
+    if (alu_broadcast_dest_ != -1 && entry_[i].depend2 == alu_broadcast_dest_) {
+      entry_[i].depend2 = -1;
+      entry_[i].val2 = alu_broadcast_val_;
+    } else if (lsb_broadcast_dest_ != -1 && entry_[i].depend2 == lsb_broadcast_dest_) {
+      entry_[i].depend2 = -1;
+      entry_[i].val2 = lsb_broadcast_val_;
     }
   }
 
