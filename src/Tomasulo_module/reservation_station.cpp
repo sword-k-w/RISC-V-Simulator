@@ -37,9 +37,9 @@ void ReservationStation::Run() {
     entry_[index].busy = true;
     entry_[index].type = new_instruction_.type;
     if (new_instruction_.format_type == IC) {
-      entry_[index].immediate_S = new_instruction_.rs2;
+      entry_[index].immediate_S = new_instruction_.immediate;
       entry_[index].depend2 = -1;
-      entry_[index].val2 = new_instruction_.immediate;
+      entry_[index].val2 = new_instruction_.rs2;
       CheckDependence(entry_[index].val1, entry_[index].depend1, new_instruction_.rs1);
     } else if (new_instruction_.format_type == J || new_instruction_.format_type == U) {
       entry_[index].depend1 = -1;

@@ -325,7 +325,7 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       res.format_type = IC;
       res.rd = Extract(code, 7, 12);
       res.rs1 = Extract(code, 15, 20);
-      res.immediate = Extract(code, 20, 32);
+      res.rs2 = Extract(code, 20, 32);
       res.ExtendSign(11);
       assert(Extract(code, 12, 15) == 0b000);
       res.type = Jalr;

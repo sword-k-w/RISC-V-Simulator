@@ -82,7 +82,7 @@ void Memory::RunPC() {
     pc_ += cur_instruction.immediate;
     cur_instruction.immediate = tmp + 4;
   } else if (cur_instruction.format_type == IC) {
-    cur_instruction.rs2 = pc_ + 4;
+    cur_instruction.immediate = pc_ + 4;
     jalr_frozen_ = true;
   } else {
     if (cur_instruction.type == Auipc) {
