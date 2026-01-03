@@ -77,7 +77,6 @@ void ReservationStation::Run() {
     }
   }
 
-
   for (int32_t i = 0; i < 32; ++i) {
     if (entry_[i].busy && entry_[i].depend1 == -1 && entry_[i].depend2 == -1) {
       entry_[i].busy = false;
@@ -86,9 +85,7 @@ void ReservationStation::Run() {
         alu_->wireS_ = entry_[i].val2;
       } else {
         alu_->wireB_ = entry_[i].val2;
-        if (entry_[i].type == Jalr) {
-          alu_->wireS_ = entry_[i].immediate_S;
-        }
+        alu_->wireS_ = entry_[i].immediate_S;
       }
       alu_->is_zero_ = entry_[i].is_zero;
       alu_->wireA_ = entry_[i].val1;
