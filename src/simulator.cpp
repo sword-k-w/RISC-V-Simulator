@@ -21,6 +21,7 @@ void Simulator::Init(int32_t argc, char **argv) {
   alu_[0].rob_ = &rob_[1];
   alu_[0].rs_ = &rs_[1];
   lsb_[0].mem_ = &mem_[1];
+  lsb_[0].rob_ = &rob_[1];
   mem_[0].predictor_ = predictor_;
   mem_[0].rf_ = &rf_[1];
   mem_[0].rob_ = &rob_[1];

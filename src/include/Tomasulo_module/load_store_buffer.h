@@ -22,10 +22,12 @@ class LoadStoreBuffer {
   friend class Memory;
 public:
   Memory *mem_;
+  ReorderBuffer *rob_;
   void Run();
   void Copy(const LoadStoreBuffer &);
 private:
   bool predict_failed_ = false;
+  uint32_t reset_tail_ = 0;
 
   uint32_t las_rob_tail_;
   bool whether_new_instruction_ = false;

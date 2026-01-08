@@ -63,6 +63,7 @@ auto ReorderBuffer::Run() -> bool {
         rs_->predict_failed_ = true;
         rf_->predict_failed_ = true;
         lsb_->predict_failed_ = true;
+        lsb_->reset_tail_ = entry_[head_].lsb_tail;
         mem_->predict_failed_ = true;
         other_->predict_failed = true;
         mem_->new_pc_ = entry_[head_].instruction.immediate;
@@ -84,6 +85,7 @@ auto ReorderBuffer::Run() -> bool {
   if (whether_new_instruction_) {
     entry_[tail_].instruction = new_instruction_;
     entry_[tail_].ready = false;
+    entry_[tail_].lsb_tail = las_lsb_tail_;
     tail_ = (tail_ + 1) % 32;
   }
 
@@ -105,6 +107,7 @@ void ReorderBuffer::Copy(const ReorderBuffer &other) {
   alu_broadcast_address_ = other.alu_broadcast_address_;
   lsb_broadcast_dest_ = other.lsb_broadcast_dest_;
   lsb_broadcast_val_ = other.lsb_broadcast_val_;
+  las_lsb_tail_ = other.las_lsb_tail_;
 }
 
 }

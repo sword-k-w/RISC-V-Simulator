@@ -13,11 +13,13 @@ struct RoBEntry {
   bool ready = false;
   uint32_t value;
   uint32_t address;
+  uint32_t lsb_tail;
 };
 
 class ReorderBuffer {
   friend class Memory;
   friend class ArithmeticLogicUnit;
+  friend class LoadStoreBuffer;
 public:
   ArithmeticLogicUnit *alu_;
   Memory *mem_;
@@ -41,6 +43,8 @@ private:
 
   int32_t lsb_broadcast_dest_ = -1;
   uint32_t lsb_broadcast_val_;
+
+  uint32_t las_lsb_tail_ = 0;
 
   uint32_t head_ = 0;
   uint32_t tail_ = 0;

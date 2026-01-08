@@ -28,11 +28,7 @@ void LoadStoreBuffer::PassInstruction() {
 void LoadStoreBuffer::Run() {
   mem_->whether_commit_ = false;
   if (predict_failed_) {
-    uint32_t nxt = (tail_ + 31) % 32;
-    while (head_ != tail_ && (!entry[nxt].ready || entry[nxt].instruction.format_type == IM)) {
-      tail_ = nxt;
-      nxt = (tail_ + 31) % 32;
-    }
+    tail_ = reset_tail_;
     if (head_ == tail_) {
       waiting_cycle_ = -1;
     } else {
@@ -40,6 +36,7 @@ void LoadStoreBuffer::Run() {
     }
     mem_->las_lsb_head_ = head_;
     mem_->las_lsb_tail_ = tail_;
+    rob_->las_lsb_tail_ = tail_;
     return;
   }
 
@@ -72,10 +69,12 @@ void LoadStoreBuffer::Run() {
   PassInstruction();
   mem_->las_lsb_head_ = head_;
   mem_->las_lsb_tail_ = tail_;
+  rob_->las_lsb_tail_ = tail_;
 }
 
 void LoadStoreBuffer::Copy(const LoadStoreBuffer &other) {
   predict_failed_ = other.predict_failed_;
+  reset_tail_ = other.reset_tail_;
   las_rob_tail_ = other.las_rob_tail_;
   whether_new_instruction_ = other.whether_new_instruction_;
   new_instruction_ = other.new_instruction_;
