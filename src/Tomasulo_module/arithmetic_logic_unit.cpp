@@ -93,8 +93,8 @@ void ArithmeticLogicUnit::Run() {
         }
       }
       rob_->alu_broadcast_dest_ = dest_;
+      rob_->alu_broadcast_address_ = res;
       if (sel_ == Sb || sel_ == Sh || sel_ == Sw || sel_ == Jalr) {
-        rob_->alu_broadcast_address_ = res;
         rob_->alu_broadcast_val_ = wireS_;
       } else {
         rob_->alu_broadcast_val_ = (is_zero_ && sel_ == Jal) ? 0 : res;
