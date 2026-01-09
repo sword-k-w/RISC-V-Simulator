@@ -80,18 +80,18 @@ void ArithmeticLogicUnit::Run() {
       default:
         assert(0);
     }
-    if (sel_ != Lb && sel_ != Lbu && sel_ != Lh && sel_ != Lhu && sel_ != Lw && sel_ != Sb && sel_ != Sh && sel_ != Sw) {
-      rs_->alu_broadcast_dest_ = dest_;
-      if (sel_ == Jalr) {
-        rs_->alu_broadcast_val_ = is_zero_ ? 0 : wireS_;
-      } else {
-        rs_->alu_broadcast_val_ = (is_zero_ && sel_ == Jal) ? 0 : res;
-      }
-    }
     if (sel_ == Lb || sel_ == Lbu || sel_ == Lh || sel_ == Lhu || sel_ == Lw) {
       lsb_->alu_broadcast_dest_ = dest_;
       lsb_->alu_broadcast_address_ = res;
     } else {
+      if (sel_ != Sb && sel_ != Sh && sel_ != Sw) {
+        rs_->alu_broadcast_dest_ = dest_;
+        if (sel_ == Jalr) {
+          rs_->alu_broadcast_val_ = is_zero_ ? 0 : wireS_;
+        } else {
+          rs_->alu_broadcast_val_ = (is_zero_ && sel_ == Jal) ? 0 : res;
+        }
+      }
       rob_->alu_broadcast_dest_ = dest_;
       if (sel_ == Sb || sel_ == Sh || sel_ == Sw || sel_ == Jalr) {
         rob_->alu_broadcast_address_ = res;
