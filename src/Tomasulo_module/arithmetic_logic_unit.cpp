@@ -81,16 +81,14 @@ void ArithmeticLogicUnit::Run() {
         assert(0);
     }
     if (is_zero_) {
-      if (sel_ == Jalr) {
-        wireS_ = 0;
-      } else {
+      if (sel_ == Jal) {
         res = 0;
       }
     }
     if (sel_ != Lb && sel_ != Lbu && sel_ != Lh && sel_ != Lhu && sel_ != Lw && sel_ != Sb && sel_ != Sh && sel_ != Sw) {
       rs_->alu_broadcast_dest_ = dest_;
       if (sel_ == Jalr) {
-        rs_->alu_broadcast_val_ = wireS_;
+        rs_->alu_broadcast_val_ = is_zero_ ? 0 : wireS_;
       } else {
         rs_->alu_broadcast_val_ = res;
       }

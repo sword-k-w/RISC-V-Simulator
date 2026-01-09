@@ -42,6 +42,7 @@ std::mt19937 rnd(time(nullptr));
 
 void Simulator::Run() {
   ++clock_;
+  // std::cerr << "clock = " << clock_ << '\n';
 
   int32_t p[7] = {0, 1, 2, 3, 4, 5, 6};
   std::shuffle(p, p + 7, rnd);
@@ -67,6 +68,7 @@ void Simulator::Run() {
     }
   }
 
+  // std::cerr << '\n';
   alu_[0].Copy(alu_[1]);
   lsb_[0].Copy(lsb_[1]);
   mem_[0].Copy(mem_[1]);

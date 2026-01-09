@@ -65,6 +65,9 @@ void Memory::RunPC() {
     rf_->whether_dependence_ = true;
     rf_->new_reg_id_ = cur_instruction.rd;
   }
+  // std::cerr << pc_ << "\n";
+  // cur_instruction.Print(std::cerr);
+  // std::cerr << '\n';
   if (cur_instruction.format_type == B) {
     uint8_t predict = predictor_->Predict(cur_instruction.address_hash_val);
     uint32_t tmp = pc_;

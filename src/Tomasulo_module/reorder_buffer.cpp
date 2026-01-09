@@ -89,6 +89,13 @@ auto ReorderBuffer::Run() -> bool {
     tail_ = (tail_ + 1) % 32;
   }
 
+  // std::cerr << "[RoB]\n";
+  // for (int i = head_; i < tail_; ++i) {
+  //   std::cerr << i << " ";
+  //   entry_[i].instruction.Print(std::cerr);
+  //   std::cerr << "       " << entry_[i].lsb_tail << '\n';
+  // }
+
   mem_->las_rob_head_ = head_;
   mem_->las_rob_tail_ = tail_;
   lsb_->las_rob_tail_ = tail_;

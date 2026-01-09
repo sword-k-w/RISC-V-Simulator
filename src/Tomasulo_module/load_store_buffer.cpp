@@ -28,7 +28,16 @@ void LoadStoreBuffer::PassInstruction() {
 void LoadStoreBuffer::Run() {
   mem_->whether_commit_ = false;
   if (predict_failed_) {
-    tail_ = reset_tail_;
+    uint32_t nxt = (tail_ + 31) % 32;
+    while (head_ != tail_ && (!entry[nxt].ready || entry[nxt].instruction.format_type == IM)) {
+      tail_ = nxt;
+      nxt = (tail_ + 31) % 32;
+    }
+    // if (tail_ != ((reset_tail_ + 1) % 32 == head_ ? head_ : reset_tail_)) {
+    //   std::cerr << head_ << " " << tail_ << " " << reset_tail_ <<'\n';
+    //   exit(0);
+    // }
+    // tail_ = (reset_tail_ + 1) % 32 == head_ ? head_ : reset_tail_;
     if (head_ == tail_) {
       waiting_cycle_ = -1;
     } else {
@@ -66,6 +75,13 @@ void LoadStoreBuffer::Run() {
     entry[tail_].dest = las_rob_tail_;
     tail_ = (tail_ + 1) % 32;
   }
+
+  // for (int i = head_; i < tail_; ++i) {
+  //   std::cerr << i << " ";
+  //   entry[i].instruction.Print(std::cerr);
+  //   std::cerr << '\n';
+  // }
+
   PassInstruction();
   mem_->las_lsb_head_ = head_;
   mem_->las_lsb_tail_ = tail_;
