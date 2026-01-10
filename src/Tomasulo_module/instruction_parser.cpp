@@ -200,12 +200,12 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
   Instruction res;
   uint32_t opcode = Extract(code, 0, 7);
   uint32_t funct;
+  res.rd = Extract(code, 7, 12);
+  res.rs1 = Extract(code, 15, 20);
+  res.rs2 = Extract(code, 20, 25);
   switch (opcode) {
     case 0b0110011:
       res.format_type = R;
-      res.rd = Extract(code, 7, 12);
-      res.rs1 = Extract(code, 15, 20);
-      res.rs2 = Extract(code, 20, 25);
       funct = Extract(code, 12, 15) << 7 | Extract(code, 25, 32);
       switch (funct) {
         case 0b0000000000:
@@ -246,8 +246,6 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       funct = Extract(code, 12, 15);
       if (funct == 0b001 || funct == 0b101) {
         res.format_type = Istar;
-        res.rd = Extract(code, 7, 12);
-        res.rs1 = Extract(code, 15, 20);
         res.immediate = Extract(code, 20, 25);
         funct <<= 7;
         funct |= Extract(code, 25, 32);
@@ -266,8 +264,6 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
         }
       } else {
         res.format_type = IA;
-        res.rd = Extract(code, 7, 12);
-        res.rs1 = Extract(code, 15, 20);
         res.immediate = Extract(code, 20, 32);
         res.ExtendSign(11);
         switch (funct) {
@@ -296,8 +292,6 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       break;
     case 0b0000011:
       res.format_type = IM;
-      res.rd = Extract(code, 7, 12);
-      res.rs1 = Extract(code, 15, 20);
       res.immediate = Extract(code, 20, 32);
       funct = Extract(code, 12, 15);
       switch (funct) {
@@ -323,17 +317,12 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       break;
     case 0b1100111:
       res.format_type = IC;
-      res.rd = Extract(code, 7, 12);
-      res.rs1 = Extract(code, 15, 20);
-      res.rs2 = Extract(code, 20, 32);
       res.ExtendSign(11);
       assert(Extract(code, 12, 15) == 0b000);
       res.type = Jalr;
       break;
     case 0b0100011:
       res.format_type = S;
-      res.rs1 = Extract(code, 15, 20);
-      res.rs2 = Extract(code, 20, 25);
       res.immediate = Extract(code, 25, 32) << 5 | Extract(code, 7, 12);
       res.ExtendSign(11);
       funct = Extract(code, 12, 15);
@@ -353,8 +342,6 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
       break;
     case 0b1100011:
       res.format_type = B;
-      res.rs1 = Extract(code, 15, 20);
-      res.rs2 = Extract(code, 20, 25);
       res.immediate = Extract(code, 31, 32) << 12;
       res.immediate |= Extract(code, 7, 8) << 11;
       res.immediate |= Extract(code, 25, 31) << 5;
@@ -387,19 +374,16 @@ Instruction InstructionParser::Decode(const uint32_t &address, const uint32_t &c
     case 0b0010111:
       res.format_type = U;
       res.type = Auipc;
-      res.rd = Extract(code, 7, 12);
       res.immediate = Extract(code, 12, 32) << 12;
       break;
     case 0b0110111:
       res.format_type = U;
       res.type = Lui;
-      res.rd = Extract(code, 7, 12);
       res.immediate = Extract(code, 12, 32) << 12;
       break;
     case 0b1101111:
       res.format_type = J;
       res.type = Jal;
-      res.rd = Extract(code, 7, 12);
       res.immediate = Extract(code, 31, 32) << 20;
       res.immediate |= Extract(code, 12, 20) << 12;
       res.immediate |= Extract(code, 20, 21) << 11;
