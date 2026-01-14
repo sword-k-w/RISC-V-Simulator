@@ -5,7 +5,7 @@
 namespace sjtu {
 
 void ReservationStation::CheckDependence(uint32_t &val, int32_t &depend, const uint32_t &reg_id) {
-  if (reg_id == 0 || old_dependence_[reg_id] == -1) {
+  if (old_dependence_[reg_id] == -1) {
     val = old_reg_[reg_id];
     depend = -1;
   } else if (old_rob_entry_[old_dependence_[reg_id]].ready) {
