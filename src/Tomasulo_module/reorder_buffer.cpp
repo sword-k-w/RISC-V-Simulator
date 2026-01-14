@@ -34,9 +34,7 @@ auto ReorderBuffer::Run() -> bool {
   if (alu_broadcast_dest_ != -1) {
     entry_[alu_broadcast_dest_].ready = true;
     entry_[alu_broadcast_dest_].value = alu_broadcast_val_;
-    if (entry_[alu_broadcast_dest_].instruction.format_type == S || entry_[alu_broadcast_dest_].instruction.format_type == IC) {
-      entry_[alu_broadcast_dest_].address = alu_broadcast_address_;
-    }
+    entry_[alu_broadcast_dest_].address = alu_broadcast_address_;
   }
 
   if (lsb_broadcast_dest_ != -1) {
