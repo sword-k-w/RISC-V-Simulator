@@ -31,15 +31,23 @@ auto ReorderBuffer::Run() -> bool {
     return false;
   }
 
-  if (alu_broadcast_dest_ != -1) {
-    entry_[alu_broadcast_dest_].ready = true;
-    entry_[alu_broadcast_dest_].value = alu_broadcast_val_;
-    entry_[alu_broadcast_dest_].address = alu_broadcast_address_;
+  for (int i = 0; i < 32; ++i) {
+    if (i == alu_broadcast_dest_) {
+      entry_[i].ready = true;
+      entry_[i].value = alu_broadcast_val_;
+      entry_[i].address = alu_broadcast_address_;
+    } else if (i == lsb_broadcast_dest_) {
+      entry_[i].ready = true;
+      entry_[i].value = lsb_broadcast_val_;
+    } else if (i == tail_) {
+      entry_[i].instruction = new_instruction_;
+      entry_[i].ready = false;
+      entry_[i].lsb_tail = las_lsb_tail_;
+    }
   }
 
-  if (lsb_broadcast_dest_ != -1) {
-    entry_[lsb_broadcast_dest_].ready = true;
-    entry_[lsb_broadcast_dest_].value = lsb_broadcast_val_;
+  if (whether_new_instruction_) {
+    tail_ = (tail_ + 1) % 32;
   }
 
   if (head_ != tail_ && entry_[head_].ready) {
@@ -78,13 +86,6 @@ auto ReorderBuffer::Run() -> bool {
       rf_->commit_value_ = entry_[head_].value;
     }
     head_ = (head_ + 1) % 32;
-  }
-
-  if (whether_new_instruction_) {
-    entry_[tail_].instruction = new_instruction_;
-    entry_[tail_].ready = false;
-    entry_[tail_].lsb_tail = las_lsb_tail_;
-    tail_ = (tail_ + 1) % 32;
   }
 
   // std::cerr << "[RoB]\n";
